@@ -4,12 +4,25 @@ const express=require('express')
 const app=express()
 
 
+/////////////////////////////////////
+const categoryRout=require('./routes/category');
+const subcategoryRout=require('./routes/subcategory');
+////
+
+app.use('/category',categoryRout)
+app.use('/subcategory',subcategoryRout)
+
 // for connect to mongoDB
 const {dbConnect}=require('./config/dbConnection')
 // parsing
 app.use(express.json());
 // router for user operations
 const userRoutes=require('./routes/userRoute')
+///////////////////////////////////// for category
+const categoryRout=require('./routes/category');
+const subcategoryRout=require('./routes/subcategory');
+////
+
 dbConnect()
 
 
