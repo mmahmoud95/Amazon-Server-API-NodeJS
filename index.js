@@ -4,10 +4,7 @@ const express=require('express')
 const app=express()
 
 
-/////////////////////////////////////
-const categoryRout=require('./routes/category');
-const subcategoryRout=require('./routes/subcategory');
-////
+
 
 app.use('/category',categoryRout)
 app.use('/subcategory',subcategoryRout)
