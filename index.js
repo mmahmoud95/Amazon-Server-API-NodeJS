@@ -3,12 +3,6 @@
 const express=require('express')
 const app=express()
 
-
-
-
-app.use('/category',categoryRout)
-app.use('/subcategory',subcategoryRout)
-
 // for connect to mongoDB
 const {dbConnect}=require('./config/dbConnection')
 // parsing
@@ -19,7 +13,8 @@ const userRoutes=require('./routes/userRoute')
 const categoryRout=require('./routes/category');
 const subcategoryRout=require('./routes/subcategory');
 ////
-
+app.use('/category',categoryRout)
+app.use('/subcategory',subcategoryRout)
 dbConnect()
 
 
