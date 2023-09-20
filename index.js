@@ -5,11 +5,12 @@ const app=express()
 
 
 // for connect to mongoDB
-const {dbConnect}=require('./config/dbConnection')
+const {dbConnect}=require('./config/dbConnection');
+const { auth } = require('./middlewares/userAuth');
 // parsing
 app.use(express.json());
 // router for user operations
-const userRoutes=require('./routes/userRoute')
+const userRoutes=require('./routes/userRoute',auth)
 dbConnect()
 
 
