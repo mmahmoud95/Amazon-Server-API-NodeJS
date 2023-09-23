@@ -1,6 +1,6 @@
 const fs=require("fs")
 const subCategorymodel=require("../models/subcategory")
-
+//getallSubcategory
 const getallSubcategory = async (req, res) => {
     try {
         var subCategory = await subCategorymodel.find().populate("categoryid")
@@ -15,7 +15,7 @@ const getallSubcategory = async (req, res) => {
     console.log(subCategory)
     res.json(subCategory)
 }
- //getsubCategoryByid//////////////////////////////////////////////////////
+ //getsubCategoryByid
 const getSubcategoryByid = async (req, res) => {
     var id = req.params.id //param object contain id
     try {
@@ -36,7 +36,7 @@ const getSubcategoryByid = async (req, res) => {
 
     }
 }
-//post//////////////////////////////////////////////////////
+//post
 const saveSubcategory = async (req, res) => {
     var subCategory = req.body 
     console.log(req.id)
@@ -52,7 +52,7 @@ const saveSubcategory = async (req, res) => {
     }
 
 }
-//update//////////////////////////////////////////////////////
+//update
 const patchSubcategory = async (req, res) => {
     var {name} = req.body; //new title
     var {id} = req.params;
@@ -69,7 +69,7 @@ const patchSubcategory = async (req, res) => {
     }
 
 }
-//////delet//////////////////////////////////////////////////
+//delet
 const deletSubcategory=async(req,res)=>{
     var {id}=req.params;
   try{

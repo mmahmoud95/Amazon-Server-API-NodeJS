@@ -1,27 +1,40 @@
 // for server
 const express = require("express");
+const mongoose = require("mongoose");
 const app = express();
-
-
 
 // for connect to mongoDB
 const { dbConnect } = require("./config/dbConnection");
+dbConnect();
 // parsing
 app.use(express.json());
-// router for user operations
-const userRoutes = require("./routes/userRoute");
-///////////////////////////////////// for category
+
+// const { auth } = require('./middlewares/userAuth');
 const categoryRout = require("./routes/category");
 const subcategoryRout = require("./routes/subcategory");
-////
+const userRoutes = require("./routes/userRoute");
+const productRout = require("./routes/product");
+const cartRout = require("./routes/cart");
 
-dbConnect();
+//for users
+app.use("/api/user", userRoutes);
+
+///////////////////////////////////// for category
 app.use("/category", categoryRout);
 app.use("/subcategory", subcategoryRout);
-app.use("/api/user", userRoutes);
+app.use("/category", categoryRout);
+app.use("/subcategory", subcategoryRout);
+
+//////for product
+app.use("/cart", cartRout);
+app.use("/products", productRout);
 
 app.use("/", (req, res, next) => {
     res.status(404).json("url not found");
 });
 
-app.listen("2000", () => console.log("server listening on port 2000"));
+//port
+const port =3333;
+app.listen(port, () => {
+    console.log("server listen",port);
+});
