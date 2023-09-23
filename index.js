@@ -1,33 +1,40 @@
-
 // for server
-const express=require('express')
-const app=express()
+const express = require("express");
+const mongoose = require("mongoose");
+const app = express();
 
 // for connect to mongoDB
-const {dbConnect}=require('./config/dbConnection')
+const { dbConnect } = require("./config/dbConnection");
+dbConnect();
 // parsing
 app.use(express.json());
-// router for user operations
-const userRoutes=require('./routes/userRoute')
+
+// const { auth } = require('./middlewares/userAuth');
+const categoryRout = require("./routes/category");
+const subcategoryRout = require("./routes/subcategory");
+const userRoutes = require("./routes/userRoute");
+const productRout = require("./routes/product");
+const cartRout = require("./routes/cart");
+
+//for users
+app.use("/api/user", userRoutes);
+
 ///////////////////////////////////// for category
-const categoryRout=require('./routes/category');
-const subcategoryRout=require('./routes/subcategory');
-////
-app.use('/category',categoryRout)
-app.use('/subcategory',subcategoryRout)
-dbConnect()
+app.use("/category", categoryRout);
+app.use("/subcategory", subcategoryRout);
+app.use("/category", categoryRout);
+app.use("/subcategory", subcategoryRout);
 
+//////for product
+app.use("/cart", cartRout);
+app.use("/products", productRout);
 
-app.use('/api/user',userRoutes)
+app.use("/", (req, res, next) => {
+    res.status(404).json("url not found");
+});
 
-
-
-app.use('/',(req,res,next)=>{
-    res.status(404).json("url not found")
-})
-
-
-app.listen('2000',()=>
-console.log("server listening on port 2000")
-);
-
+//port
+const port =3333;
+app.listen(port, () => {
+    console.log("server listen",port);
+});

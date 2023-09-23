@@ -9,8 +9,8 @@ const subCategorySchema = mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ["to-do", "in progress", "done"],
-        default: "to-do"
+        enum: ["done","in stock", "in progress"],
+        default: "done"
     } ,
     categoryid: {
         type: mongoose.Schema.Types.ObjectId,

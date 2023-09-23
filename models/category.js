@@ -10,8 +10,8 @@ const categoryschems = mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ["to-do", "in progress", "done"],
-        default: "to-do"
+        enum: ["done","in stock", "in progress"],
+        default: "done"
     } 
 }, 
 {timestamps: true}

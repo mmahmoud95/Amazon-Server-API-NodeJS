@@ -1,6 +1,6 @@
 const fs = require("fs")
 const categorymodel = require("../models/category")
-
+//getallCategory
 const getallCategory = async (req, res) => {
     try {
         var category = await categorymodel.find()
@@ -15,7 +15,7 @@ const getallCategory = async (req, res) => {
     console.log(category)
     res.json(category)
 }
- //getCategoryByid//////////////////////////////////////////////////////
+ //getCategoryByid
 const getCategoryByid = async (req, res) => {
     var id = req.params.id //param object contain id
     try {
@@ -36,10 +36,9 @@ const getCategoryByid = async (req, res) => {
 
     }
 }
-//post//////////////////////////////////////////////////////
+//postCategory
 const saveCategory = async (req, res) => {
     var category = req.body //body contain datain req
-    // todo.userid=req.id
     console.log(req.id)
     try {
         var newcategory = await categorymodel.create(category)
@@ -53,7 +52,7 @@ const saveCategory = async (req, res) => {
     }
 
 }
-//update//////////////////////////////////////////////////////
+//updateCategory
 const patchCategory = async (req, res) => {
     var {name} = req.body; //new title
     var {id} = req.params;
@@ -70,7 +69,7 @@ const patchCategory = async (req, res) => {
     }
 
 }
-//////delet//////////////////////////////////////////////////
+//deletCategory
 const deletCategory=async(req,res)=>{
     var {id}=req.params;
   try{
