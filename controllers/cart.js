@@ -36,7 +36,7 @@ const updateCart = async (req, res) => {
     try {
         const updateCart = await cartModel.updateOne(
             { userId },
-            { $push: { products: newProduct } }
+            { $push: { items: newProduct } }
         );
 
         res.status(201).json({
@@ -53,12 +53,12 @@ const deleteProductFromCart = async (req, res) => {
     const productId = req.body.productId;
     try {
         const findCart = await cartModel.find({ userId });
-        const filteredProducts = findCart[0].products.filter(
+        const filteredProducts = findCart[0].items.filter(
             (product) => product.productId.toString() !== productId
         );
         const updateCart = await cartModel.updateOne(
             { userId },
-            { products: filteredProducts }
+            { items: filteredProducts }
         );
         res.status(201).json({
             userId,
