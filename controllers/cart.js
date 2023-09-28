@@ -24,7 +24,6 @@ const getCart = async (req, res) => {
             message: "Cart fetched successfully",
             data: userCart,
         });
-        console.log(userCart);
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
@@ -53,6 +52,7 @@ const deleteProductFromCart = async (req, res) => {
     const productId = req.body.productId;
     try {
         const findCart = await cartModel.find({ userId });
+        console.log(findCart);
         const filteredProducts = findCart[0].items.filter(
             (product) => product.productId.toString() !== productId
         );

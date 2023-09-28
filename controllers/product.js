@@ -43,10 +43,20 @@ const getProductById = async (req, res) => {
 const updateProductByID = async (req, res) => {
     const id = req.params.id;
     const { title } = req.body;
+    const { descreption } = req.body;
+    const { imageUrl } = req.body;
+    const { quantity } = req.body;
+    const { price } = req.body;
+    const { category } = req.body;
 
     try {
         const product = await productModel.findByIdAndUpdate(id, {
-            title: title,
+            title,
+            descreption,
+            imageUrl,
+            quantity,
+            price,
+            category,
         });
         res.status(200).json({
             message: "Product updated successfully",

@@ -12,7 +12,10 @@ app.use(express.json());
 // const { auth } = require('./middlewares/userAuth');
 const categoryRout = require("./routes/category");
 const subcategoryRout = require("./routes/subcategory");
+const subSubCategoryRout = require("./routes/InternalSubCategory");
+
 const userRoutes = require("./routes/userRoute");
+
 const productRout = require("./routes/product");
 const cartRout = require("./routes/cart");
 
@@ -22,8 +25,7 @@ app.use("/api/user", userRoutes);
 ///////////////////////////////////// for category
 app.use("/category", categoryRout);
 app.use("/subcategory", subcategoryRout);
-app.use("/category", categoryRout);
-app.use("/subcategory", subcategoryRout);
+app.use("/subcategory/sub", subSubCategoryRout);
 
 //////for product
 app.use("/cart", cartRout);
@@ -34,7 +36,7 @@ app.use("/", (req, res, next) => {
 });
 
 //port
-const port =3333;
+const port = 3333;
 app.listen(port, () => {
-    console.log("server listen",port);
+    console.log("server listen", port);
 });
