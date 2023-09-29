@@ -3,6 +3,7 @@ const cartModel = require("../models/cart");
 const productModel = require("../models/product");
 const { updateCart } = require("./cart");
 const { userModel } = require("../models/userModel");
+const { now } = require("mongoose");
 
 //create cash order
 const createCashOrder = async (req, res) => {
@@ -72,5 +73,27 @@ try {
 }
 
 
+//update order paid status to paid using order id (by admin):
+const updateOrderToPaid =async (req,res)=>{
+try {
+  const id= req.params.orderId;
+  console.log(id);
+  const order =await orderModel.findById(id);
+  console.log(order);
+  if (!order){
+    return res.status(404).json({ message: "There is no orders matches this id !" });
+  }
+  // await todosModel.updateOne({ _id: id }, { isPaid: true });
+  // await todosModel.updateOne({ _id: id }, { paidAt: now });
 
-module.exports = { createCashOrder, getAllOrders,getSpecificUserOrder};
+  order.isPaid= true;
+  order.paidAt=Date.now();
+  const updatedOrder= await order.save();
+  res.status(200).json({updatedOrder})
+} catch (error) {
+  res.status(500).json({message:error.message})
+}
+}
+
+
+module.exports = { createCashOrder, getAllOrders,getSpecificUserOrder,updateOrderToPaid};

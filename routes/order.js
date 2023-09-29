@@ -1,6 +1,6 @@
 const express = require("express");
 var router = express.Router();
-var {createCashOrder,getAllOrders,getSpecificUserOrder}=require('../controllers/order');
+var {createCashOrder,getAllOrders,getSpecificUserOrder,updateOrderToPaid}=require('../controllers/order');
 const {auth}=require('../middlewares/userAuth');
 const {authRole}=require('../middlewares/adminAuth');
 
@@ -8,6 +8,6 @@ const {authRole}=require('../middlewares/adminAuth');
 router.post('/:cartId',auth,createCashOrder);
 router.get('/allOrders',authRole,getAllOrders);
 router.get("/userOrders/:userId",auth,getSpecificUserOrder)
-
+router.patch("/updateOrderToPaid/:orderId",updateOrderToPaid)
 
 module.exports=router
