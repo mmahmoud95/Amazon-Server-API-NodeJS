@@ -37,4 +37,17 @@ const createCashOrder = async (req, res) => {
   }
 };
 
-module.exports = { createCashOrder };
+
+//get all orders :
+const getAllOrders =async (req,res)=>{
+try {
+  const orders=await orderModel.find().populate("user").populate("cartItems")
+  res.status(200).json(orders)
+} catch (error) {
+  res.status(500).json({message:error.message})
+}
+}
+
+
+
+module.exports = { createCashOrder, getAllOrders};
