@@ -12,7 +12,7 @@ const {
     deletProductByID,
 } = require("../controllers/product");
 
-router.post("/", auth, authRole, addNewProduct);
+router.post("/", auth,addNewProduct);
 router.get("/", getAllProduct);
 router.get("/:id", getProductById);
 router.patch("/:id", auth, authRole, updateProductByID);

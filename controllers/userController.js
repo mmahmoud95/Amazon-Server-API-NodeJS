@@ -46,7 +46,7 @@ const logIn = async (req, res) => {
         let token = jwt.sign(
           { id: user._id, email: user.email, userType: user.userType },
           "amazonCloneProject",
-          { expiresIn: "1h" }
+          { expiresIn: "24h" }
         );
         res
           .status(200)

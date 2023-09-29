@@ -15,8 +15,10 @@ const orderSchema = mongoose.Schema({
                 type: Number,
                 required: true
             },
-            price: Number
-        }
+            price:{
+                type: Number
+            }
+        },
     ],
     taxPrice:{
         type:Number,
@@ -34,6 +36,28 @@ const orderSchema = mongoose.Schema({
         enum:["cash","card"],
         default:"cash"
     },
+    shippingAddress:{
+        country: { type: String, minlength: 4, default: "Egypt" },
+        street: {
+          type: String,
+          minlength: 4,
+          default: "el moez street",
+        },
+        city: {
+          type: String,
+          minlength: 4,
+          default: "el moez street",
+        },
+        province: { 
+            type: String, minlength: 4, default: "cairo" 
+        },
+        zip: { 
+            type: Number, minlength: 5, default: "11111" 
+        },
+        phone: {
+            type:Number
+        }
+    },
     isPaid:{
         type:Boolean,
         default:false
@@ -48,7 +72,7 @@ const orderSchema = mongoose.Schema({
     deliveredAt:{
         type:Date
     },
-    
+
     
 },
     {timestamps:true})

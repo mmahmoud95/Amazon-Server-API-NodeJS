@@ -18,6 +18,7 @@ const userRoutes = require("./routes/userRoute");
 
 const productRout = require("./routes/product");
 const cartRout = require("./routes/cart");
+const orderRoutes= require('./routes/order')
 
 //for users
 app.use("/api/user", userRoutes);
@@ -31,9 +32,13 @@ app.use("/subcategory/sub", subSubCategoryRout);
 app.use("/cart", cartRout);
 app.use("/products", productRout);
 
+//for order:
+app.use("/order",orderRoutes)
+
 app.use("/", (req, res, next) => {
     res.status(404).json("url not found");
 });
+
 
 //port
 const port = 3333;
