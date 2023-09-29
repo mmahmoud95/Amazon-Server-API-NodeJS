@@ -2,6 +2,9 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
+const dotenv= require('dotenv')
+//config.env
+dotenv.config({path:'config.env'});
 
 // for connect to mongoDB
 const { dbConnect } = require("./config/dbConnection");
