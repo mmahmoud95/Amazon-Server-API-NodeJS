@@ -83,9 +83,6 @@ try {
   if (!order){
     return res.status(404).json({ message: "There is no orders matches this id !" });
   }
-  // await todosModel.updateOne({ _id: id }, { isPaid: true });
-  // await todosModel.updateOne({ _id: id }, { paidAt: now });
-
   order.isPaid= true;
   order.paidAt=Date.now();
   const updatedOrder= await order.save();
@@ -96,4 +93,22 @@ try {
 }
 
 
-module.exports = { createCashOrder, getAllOrders,getSpecificUserOrder,updateOrderToPaid};
+//update order isDelivered status to Delivered using order id (by admin):
+const updateOrderTODelivered =async (req,res)=>{
+  try {
+    const id= req.params.orderId;
+    const order =await orderModel.findById(id);
+    if (!order){
+      return res.status(404).json({ message: "There is no orders matches this id !" });
+    }
+    order.isDelivered= true;
+    order.deliveredAt=Date.now();
+    const updatedOrder= await order.save();
+    res.status(200).json({updatedOrder})
+  } catch (error) {
+    res.status(500).json({message:error.message})
+  }
+  }
+
+
+module.exports = { createCashOrder, getAllOrders,getSpecificUserOrder,updateOrderToPaid,updateOrderTODelivered};
