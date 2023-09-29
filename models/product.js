@@ -18,27 +18,44 @@ const productSchema = mongoose.Schema(
             type: mongoose.SchemaTypes.ObjectId,
             ref: "SubCategory",
         },
-        skus: {
-            type: Array,
+        sku: {
+            type: String,
             required: true,
-            sku: {
-                type: Number,
-                required: true,
-            },
-            quantity: {
-                type: Number,
-                required: true,
-            },
-            price: {
-                type: Number,
-                required: true,
-            },
-            option: {
-                type: Array,
-                required: false,
-            },
+        },
+        quantity: {
+            type: Number,
+            required: true,
+        },
+        price: {
+            type: Number,
+            required: true,
+        },
+        rating: {
+            type: Number,
+            required: true,
         },
     },
+    // skus: {
+    //     type: Array,
+    //     required: true,
+    //     sku: {
+    //         type: Number,
+    //         required: true,
+    //     },
+    //     quantity: {
+    //         type: Number,
+    //         required: true,
+    //     },
+    //     price: {
+    //         type: Number,
+    //         required: true,
+    //     },
+    //     option: {
+    //         type: Array,
+    //         required: false,
+    //     },
+    // },
+
     { timestamps: true }
 );
 
