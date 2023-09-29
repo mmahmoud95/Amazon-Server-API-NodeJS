@@ -2,6 +2,7 @@ const orderModel = require("../models/order");
 const cartModel = require("../models/cart");
 const productModel = require("../models/product");
 const { updateCart } = require("./cart");
+const { userModel } = require("../models/userModel");
 
 //create cash order
 const createCashOrder = async (req, res) => {
@@ -32,13 +33,15 @@ const createCashOrder = async (req, res) => {
     if (order) {
       await cartModel.findByIdAndDelete(id);
     }
+     //response user:
+  res.status(201).json({message:"order success", data:order})
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
 
 
-//get all orders :
+//get all orders for admin :
 const getAllOrders =async (req,res)=>{
 try {
   const orders=await orderModel.find().populate("user").populate("cartItems")
@@ -49,5 +52,25 @@ try {
 }
 
 
+//get specific user order by user id:
+const getSpecificUserOrder=async(req,res)=>{
+try {
+  const id =req.params.userId;
 
-module.exports = { createCashOrder, getAllOrders};
+  // Find the user by their ID
+  const user = await userModel.findById(id);
+  if(!user){
+    return res.status(404).json({ message: "User not found" });
+  }
+
+   // Find orders which have this userid:
+   const orders = await orderModel.find({ user: user._id });
+   res.status(200).json(orders)
+} catch (error) {
+  res.status(500).json({message:error.message})
+}
+}
+
+
+
+module.exports = { createCashOrder, getAllOrders,getSpecificUserOrder};
