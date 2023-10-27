@@ -2,13 +2,23 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
-const dotenv= require('dotenv')
+var corsMiddleware = require("cors");
+
+const dotenv = require("dotenv");
 //config.env
-dotenv.config({path:'config.env'});
+dotenv.config({ path: "config.env" });
 
 // for connect to mongoDB
 const { dbConnect } = require("./config/dbConnection");
 dbConnect();
+
+app.use(
+    corsMiddleware({
+        //origin: 'https://amzon.com/,
+        origin: "*",
+        //  methods: "GET",
+    })
+);
 // parsing
 app.use(express.json());
 
@@ -21,7 +31,7 @@ const userRoutes = require("./routes/userRoute");
 
 const productRout = require("./routes/product");
 const cartRout = require("./routes/cart");
-const orderRoutes= require('./routes/order')
+const orderRoutes = require("./routes/order");
 
 //for users
 app.use("/api/user", userRoutes);
@@ -36,12 +46,11 @@ app.use("/cart", cartRout);
 app.use("/products", productRout);
 
 //for order:
-app.use("/order",orderRoutes)
+app.use("/order", orderRoutes);
 
 app.use("/", (req, res, next) => {
     res.status(404).json("url not found");
 });
-
 
 //port
 const port = 3333;

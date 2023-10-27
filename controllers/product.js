@@ -87,7 +87,20 @@ const deleteAllProducts = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 };
-
+const getProductsByCategory = async (req, res) => {
+    const category = req.params.category;
+    try {
+        const product = await productModel
+            .find({ category: category })
+            .populate("category", "name");
+        res.status(200).json({
+            message: "Product fetched successfully",
+            data: product,
+        });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
 module.exports = {
     addNewProduct,
     getAllProduct,
@@ -95,4 +108,5 @@ module.exports = {
     getProductById,
     updateProductByID,
     deletProductByID,
+    getProductsByCategory,
 };

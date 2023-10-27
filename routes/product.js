@@ -10,11 +10,13 @@ const {
     getProductById,
     updateProductByID,
     deletProductByID,
+    getProductsByCategory,
 } = require("../controllers/product");
 
-router.post("/", auth,authRole,addNewProduct);
+router.post("/", auth, authRole, addNewProduct);
 router.get("/", getAllProduct);
 router.get("/:id", getProductById);
+router.get("/category/:category", getProductsByCategory);
 router.patch("/:id", auth, authRole, updateProductByID);
 router.delete("/:id", auth, authRole, deletProductByID);
 router.delete("/", auth, authRole, deleteAllProducts);

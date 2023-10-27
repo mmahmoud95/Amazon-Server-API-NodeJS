@@ -1,11 +1,11 @@
-# Amazon-Server-API-NodeJS
+### Amazon-Server-API-NodeJS
 
 
 first of all you should type in terminal or cmd
 
 ******** npm i or npm install    *****for installing modules
 
-# Hamza user ,Admin,Auth,AutRole
+## Hamza user ,Admin,Auth,AutRole
 in dbConnection in config folder
 **************
 in index   in server listen add your port number if you like, mine is 2000 
@@ -34,7 +34,7 @@ in auth request you can access id and userType and email because i used them in 
 user Schema -password hashing -authorization -and log In and sign up and admin operations and user operations
 and we have 2 middlewares one check log in status and another to check whether admin or user
 
-# Mostafa Product And Cart
+## Mostafa Product And Cart
 instruction product 
 
 for products post,patch,delete after login and be admin
@@ -93,10 +93,10 @@ to delete product from cart
 3- in body put like this 
 {"productId":"650daec028417ff67548d978"}
 
-# Ranad
+## Ranad
 all operations Realted to category subcategory sub subcategory
 
-# Martina Order And Payment
+## Martina Order And Payment
 on creating order we use 2 methods to pay :
 1- Cash on delivery,it's almost done.
 

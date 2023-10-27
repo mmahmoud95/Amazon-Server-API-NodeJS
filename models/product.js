@@ -6,27 +6,33 @@ const productSchema = mongoose.Schema(
             type: String,
             required: true,
         },
-        descreption: {
+        description: {
             type: String,
             required: true,
         },
-        imageUrl: {
+        thumbnail: {
             type: String,
             required: true,
         },
+        images: { type: Array, required: true },
         category: {
             type: mongoose.SchemaTypes.ObjectId,
-            ref: "SubCategory",
+            ref: "Category",
         },
         sku: {
             type: String,
             required: true,
+            unique: true,
         },
-        quantity: {
+        quantityInStock: {
             type: Number,
             required: true,
         },
         price: {
+            type: Number,
+            required: true,
+        },
+        discountPercentage: {
             type: Number,
             required: true,
         },
