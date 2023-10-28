@@ -90,13 +90,19 @@ const deleteAllProducts = async (req, res) => {
 const getProductsByCategory = async (req, res) => {
     const category = req.params.category;
     try {
-        const product = await productModel
+        const products = await productModel
             .find({ category: category })
             .populate("category", "name");
-        res.status(200).json({
-            message: "Product fetched successfully",
-            data: product,
-        });
+        if (products.length !== 0) {
+            res.status(200).json({
+                message: "Product fetched successfully",
+                data: products,
+            });
+        } else {
+            res.status(404).json({
+                message: "no data",
+            });
+        }
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
