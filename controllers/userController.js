@@ -45,8 +45,8 @@ const logIn = async (req, res) => {
         //generate token
         let token = jwt.sign(
           { id: user._id, email: user.email, userType: user.userType },
-          process.env.SECRET,
-          { expiresIn: "1h" }
+          "amazonCloneProject",
+          { expiresIn: "24h" }
         );
         res
           .status(200)

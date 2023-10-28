@@ -15,8 +15,4 @@ router.patch('/login/update',auth,updateUser)
 router.patch('/login/update/user',auth,authRole,updateUserById)
 
 
-
-
-
 module.exports=router;
-

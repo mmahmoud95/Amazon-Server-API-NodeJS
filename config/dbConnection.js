@@ -1,13 +1,18 @@
 // for connecting to our database
 
-const mongoose=require('mongoose')
+const mongoose = require("mongoose");
 
-const dbConnect=()=>{
-mongoose.connect('mongodb://127.0.0.1:27017/AmazonUser').then(()=>{
-    console.log("connected to Amazon_Api successfully");
-}).catch((err)=>{
-    console.log(err);
-})    
-}
+const dbConnect = () => {
+    mongoose
+        .connect(
+            "mongodb+srv://mustafamhmod95:bYrUCQ2Jf6z3ZU8w@amazon.fj4moo9.mongodb.net/"
+        )
+        .then(() => {
+            console.log("connected to Amazon_Api successfully");
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+};
 
-module.exports={dbConnect}
+module.exports = { dbConnect };
