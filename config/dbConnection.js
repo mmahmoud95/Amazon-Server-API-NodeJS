@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const dbConnect = () => {
     mongoose
         .connect(
-            "mongodb+srv://mustafamhmod95:bYrUCQ2Jf6z3ZU8w@amazon.fj4moo9.mongodb.net/"
+            "mongodb+srv://mustafamhmod95:bYrUCQ2Jf6z3ZU8w@amazon.fj4moo9.mongodb.net/Amazon"
         )
         .then(() => {
             console.log("connected to Amazon_Api successfully");
