@@ -11,7 +11,7 @@ const getallCategory = async (req, res) => {
         });
     }
 
-    console.log(category);
+    // console.log(category);
     // res.json(category);
 };
 //getCategoryByid
@@ -58,7 +58,7 @@ const patchCategory = async (req, res) => {
             { _id: id },
             { name: name }
         );
-        console.log(queryRes);
+        // console.log(queryRes);
         res.json({
             message: "updated",
         });
@@ -74,7 +74,7 @@ const deletCategory = async (req, res) => {
     try {
         var category = await categorymodel.deleteOne({ _id: id });
 
-        console.log(category);
+        // console.log(category);
         res.json({ message: "delet run" });
     } catch (err) {
         res.status(500).json({
