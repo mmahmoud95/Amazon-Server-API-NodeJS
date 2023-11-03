@@ -18,7 +18,7 @@ const getCart = async (req, res) => {
     const userId = req.id;
 
     try {
-        const userCart = await cartModel.find({ userId });
+        const userCart = await cartModel.find({ userId }).
         res.status(201).json({
             userId,
             message: "Cart fetched successfully",
