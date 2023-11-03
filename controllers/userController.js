@@ -28,6 +28,30 @@ const signUp = async (req, res) => {
     }
   }
 };
+// check if email exist in database
+const CheckEmail = async (req, res) => {
+  email = req.body.email;
+  if (!email ) {
+    res.status(400).json({ message: "please enter your email " });
+  } else {
+    try {
+      let user = await userModel.findOne({ email });
+
+      if (user ) {
+        res.status(200)
+          .json({ message: "valid Email ",yourEmail:email});
+      } else {
+        res
+          .status(200)
+          .json({ message: "your have to sign up first "});
+      }
+    } catch (err) {
+      res
+        .status(500)
+        .json({ message: "invalid email or invalid password", err: err });
+    }
+  }
+};
 // log in
 const logIn = async (req, res) => {
   email = req.body.email;
@@ -133,4 +157,4 @@ const updateUserById = async (req, res, next) => {
   }
 }
 
-module.exports = { signUp, logIn, deleteUser,updateUserById,updateUser };
+module.exports = { signUp, logIn, deleteUser,updateUserById,updateUser,CheckEmail };
