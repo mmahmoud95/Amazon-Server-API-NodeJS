@@ -4,9 +4,9 @@ const jwt = require("jsonwebtoken");
 
 // add  new user or sing up function    (/signup)
 const signUp = async (req, res) => {
-  const { firstName, lastName, email, password } = req.body;
+  const { name, ConfirmPassword, email, password } = req.body;
 
-  if (!email || !password || !firstName || !lastName) {
+  if (!email || !password || !name || !ConfirmPassword) {
     res.status(500).json({
       message:
         "please enter your first name and last name and your email and password ",
