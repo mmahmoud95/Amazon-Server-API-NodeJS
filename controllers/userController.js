@@ -38,11 +38,11 @@ const CheckEmail = async (req, res) => {
       let user = await userModel.findOne({ email });
 
       if (user ) {
-        res.status(200)
+        res.status(204)
           .json({ message: "valid Email ",yourEmail:email});
       } else {
         res
-          .status(200)
+          .status(404)
           .json({ message: "your have to sign up first "});
       }
     } catch (err) {
