@@ -38,7 +38,7 @@ const CheckEmail = async (req, res) => {
       let user = await userModel.findOne({ email });
 
       if (user ) {
-        res.status(204)
+        res.status(200)
           .json({ message: "valid Email ",yourEmail:email});
       } else {
         res
