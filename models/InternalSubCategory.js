@@ -3,7 +3,7 @@ const sub_subCategorySchema = mongoose.Schema({
     name: {
         type: String,
         minlength: 2,
-        maxlength: 20,
+        maxlength: 30,
         required: true,
     },
     status: {
