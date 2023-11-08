@@ -13,7 +13,6 @@ const getallSub_subcategory = async (req, res) => {
         } 
     
         console.log(sub_subCategory)
-        res.json(sub_subCategory)
     }
  //getsub_subCategoryByid
 const getSub_subcategoryByid = async (req, res) => {

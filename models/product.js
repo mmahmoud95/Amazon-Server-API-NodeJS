@@ -19,6 +19,14 @@ const productSchema = mongoose.Schema(
             type: mongoose.SchemaTypes.ObjectId,
             ref: "Category",
         },
+        subCategory: {
+            type: mongoose.SchemaTypes.ObjectId,
+            ref: "SubCategory",
+        },
+        subSubCategor: {
+            type: mongoose.SchemaTypes.ObjectId,
+            ref: "sub_subCategor",
+        },
         sku: {
             type: String,
             required: true,

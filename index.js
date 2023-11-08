@@ -38,8 +38,8 @@ app.use("/api/user", userRoutes);
 
 ///////////////////////////////////// for category
 app.use("/category", categoryRout);
-app.use("/subcategory", subcategoryRout);
 app.use("/subcategory/sub", subSubCategoryRout);
+app.use("/subcategory", subcategoryRout);
 
 //////for product
 app.use("/cart", cartRout);

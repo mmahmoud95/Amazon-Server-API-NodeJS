@@ -11,9 +11,7 @@ const getallSubcategory = async (req, res) => {
         })
 
     } 
-
     console.log(subCategory)
-    res.json(subCategory)
 }
  //getsubCategoryByid
 const getSubcategoryByid = async (req, res) => {
