@@ -115,12 +115,6 @@ const updateOrderTODelivered = async (req, res) => {
   }
 };
 
-
-
-
-
-
-
 ////online payment:(still working on it)
 //get chechout session from stripe and send it as a response:
 const chechOutSession = async (req, res) => {
@@ -140,13 +134,13 @@ const chechOutSession = async (req, res) => {
     const totalOrderPrice = cartPrice + taxPrice + shippingPrice;
     //hanling product and data:
     const product = await stripe.products.create({
-      name: 'cart_products',
+      name: "cart_products",
     });
-console.log(product);
+    console.log(product);
     const price = await stripe.prices.create({
       product: product.id,
-      unit_amount: totalOrderPrice*100,
-      currency: 'egp',
+      unit_amount: totalOrderPrice * 100,
+      currency: "egp",
     });
     console.log(price);
     //create stripe checkout session
@@ -166,19 +160,65 @@ console.log(product);
         },
       ],
       mode: "payment",
-      success_url: `${req.protocol}://${req.get('host')}/order`,
-      cancel_url: `${req.protocol}://${req.get('host')}/cart`,
+      success_url: `${req.protocol}://${req.get("host")}/order`,
+      cancel_url: `${req.protocol}://${req.get("host")}/cart`,
       // customer_email: req.user.email,
       client_reference_id: cart._id,
       // metadata:req.body.Address
     });
     //send session response:
-res.status(200).json({status:'success',session})
+    res.status(200).json({ status: "success", session });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
+
 //checkout session with cart id:
+
+
+
+
+// const chechOutSession = async (req, res) => {
+//   const taxPrice = 0;
+//   const shippingPrice = 0;
+//   try{
+//     //get cart depends on cart id:
+//     const id = req.params.cartId;
+//     const cart = await cartModel.findById(id);
+//     if (!cart) {
+//       return res
+//         .status(404)
+//         .json({ message: "There is no such cart matches this id !" });
+//     }
+//      //get order price depend on cart price :
+//      const cartPrice = cart.bill;
+//      const totalOrderPrice = cartPrice + taxPrice + shippingPrice;
+
+//      const session = await stripe.checkout.sessions.create({
+//       line_items:[
+// {
+//   // name:req.User.firstName,
+//   amount:totalOrderPrice*100,
+//   currency:'egp',
+//   quantity:1,
+
+// }
+//       ],
+//       mode:"payment",
+//       success_url: `${req.protocol}://${req.get('host')}/order`,
+//       cancel_url: `${req.protocol}://${req.get('host')}/cart`,
+//         // customer_email: req.user.email,
+//         client_reference_id: cart.id,
+//      })
+//      res.status(200).json({ status: "success", session });
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// }
+
+
+
 
 module.exports = {
   createCashOrder,
@@ -186,5 +226,5 @@ module.exports = {
   getSpecificUserOrder,
   updateOrderToPaid,
   updateOrderTODelivered,
-  chechOutSession
+  chechOutSession,
 };
