@@ -1,7 +1,7 @@
 //route of Subcategory
 const express=require("express");
 var router=express.Router()
-const  { getallSubcategory, saveSubcategory, getSubcategoryByid, patchSubcategory, deletSubcategory}=require('../controllers/subcategory')
+const  { getallSubcategory, saveSubcategory, getSubcategoryByid, patchSubcategory, deletSubcategory,subOfCategory}=require('../controllers/subcategory')
 const { auth } = require('../middlewares/userAuth');
 const{authRole}=require('../middlewares/adminAuth')
 
@@ -13,6 +13,8 @@ router.get('/:id',getSubcategoryByid)
 router.get("/login/sub",auth,getallSubcategory)
 router.get('/login/sub/:id',auth,getSubcategoryByid)
 
+//get subcategories of specific category:
+router.get('/sub/:categoryId',subOfCategory)
 //to save new Subcategory by admin
 router.post('/login/sub/save',auth,authRole,saveSubcategory)
 

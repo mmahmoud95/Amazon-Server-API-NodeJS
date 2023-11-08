@@ -34,6 +34,22 @@ const getSubcategoryByid = async (req, res) => {
 
     }
 }
+
+
+// //get subcategories of specific category:
+
+const subOfCategory = async (req,res)=>{
+    var parentCategory = req.params.id
+    console.log(parentCategory);
+    try{
+        const subCtegories = await subCategorymodel.find(parentCategory).populate("categoryid")
+        res.status(201).json(subCtegories)
+    }catch{
+        res.status(500).json({ message: error.message });
+    }
+}
+
+
 //post
 const saveSubcategory = async (req, res) => {
     var subCategory = req.body 
@@ -83,4 +99,4 @@ catch(err){
     })
 }
 }
-module.exports = { getallSubcategory, saveSubcategory, getSubcategoryByid, patchSubcategory, deletSubcategory}
+module.exports = { getallSubcategory, saveSubcategory, getSubcategoryByid, patchSubcategory, deletSubcategory,subOfCategory}
