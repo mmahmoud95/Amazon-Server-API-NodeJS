@@ -15,7 +15,11 @@ const addNewProduct = async (req, res) => {
 
 const getAllProduct = async (req, res) => {
     try {
-        const products = await productModel.find().populate("category", "name");
+        const products = await productModel
+            .find()
+            .populate("category", "name")
+            .populate("subCategory", "name")
+            .populate("subSubCategor", "name");
         res.status(200).json({
             message: "Products fetched successfully",
             data: products,
