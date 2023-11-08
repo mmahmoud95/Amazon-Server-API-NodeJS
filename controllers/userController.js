@@ -38,8 +38,8 @@ const CheckEmail = async (req, res) => {
       let user = await userModel.findOne({ email });
 
       if (user ) {
-        res.status(204)
-          .json({ message: "valid Email ",yourEmail:email});
+        res.status(200)
+          .json({ message: "valid Email",yourEmail:email});
       } else {
         res
           .status(404)
@@ -156,5 +156,28 @@ const updateUserById = async (req, res, next) => {
     res.status(400).json({ message: "name or Id not present" });
   }
 }
+const updateUserAddressById = async (req, res, next) => {
+  var userID=req.body.id
+  console.log(userID);
 
-module.exports = { signUp, logIn, deleteUser,updateUserById,updateUser,CheckEmail };
+  var address = req.body.address;
+  // Verifying if userType and id is present
+  if (userID&&address) {
+      await userModel.updateOne(
+        { _id: userID },
+        { address:address}
+      );
+      res
+        .status(200)
+        .json({ message: "user address edited successfully", address });
+    } else if(!userID||!address) {
+      res.status(400).json({
+        message: "please write user id , new address",
+      });
+    }
+   else  {
+    res.status(400).json({ message: "address or Id not present" });
+  }
+}
+
+module.exports = { signUp, logIn, deleteUser,updateUserById,updateUser,updateUserAddressById,CheckEmail };
