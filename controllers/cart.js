@@ -24,12 +24,12 @@ const addNewCart = async (req, res) => {
     try {
         if (!cart) {
             const newCart = await cartModel.create(cartItems);
+            calcTotalCartPrice(cart);
             res.status(201).json({
                 userId,
                 message: "Cart created successfully",
                 data: newCart,
             });
-            calcTotalCartPrice(cart);
         } else {
             // console.log(cart.items);
             const productIndex = cart.items.findIndex(
