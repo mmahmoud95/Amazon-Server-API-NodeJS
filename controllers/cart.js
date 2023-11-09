@@ -93,7 +93,7 @@ const deleteProductFromCart = async (req, res) => {
         res.status(201).json({
             userId,
             message: "product deleted successfully",
-            // data: updateCart,
+            data: updateCart,
         });
     } catch (error) {
         res.status(400).json({ message: error.message });
