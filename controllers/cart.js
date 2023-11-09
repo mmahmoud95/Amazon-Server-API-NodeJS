@@ -1,15 +1,15 @@
 const cartModel = require("../models/cart");
 const Product = require("../models/product");
 
-const calcTotalCartPrice = (cart) => {
-    let totalPrice = 0;
-    cart.items.forEach((item) => {
-        totalPrice += item.quantity * item.price;
-    });
-    cart.totalPrice = totalPrice;
-    // cart.totalPriceAfterDiscount = undefined;
-    return totalPrice;
-};
+// const calcTotalCartPrice = (cart) => {
+//     let totalPrice = 0;
+//     cart.items.forEach((item) => {
+//         totalPrice += item.quantity * item.price;
+//     });
+//     cart.totalPrice = totalPrice;
+//     // cart.totalPriceAfterDiscount = undefined;
+//     return totalPrice;
+// };
 const addNewCart = async (req, res) => {
     const { productId } = req.body;
     const userId = req.id;
@@ -24,7 +24,7 @@ const addNewCart = async (req, res) => {
     try {
         if (!cart) {
             const newCart = await cartModel.create(cartItems);
-            calcTotalCartPrice(cart);
+            // calcTotalCartPrice(cart);
             res.status(201).json({
                 userId,
                 message: "Cart created successfully",
@@ -45,8 +45,8 @@ const addNewCart = async (req, res) => {
                     productId: productId,
                 });
             }
-            calcTotalCartPrice(cart);
             await cart.save();
+            // calcTotalCartPrice(cart);
             res.status(201).json({
                 userId,
                 message: "Cart update successfully",
@@ -88,7 +88,7 @@ const deleteProductFromCart = async (req, res) => {
             { userId },
             { items: filteredProducts }
         );
-        calcTotalCartPrice(updateCart);
+        // calcTotalCartPrice(updateCart);
 
         res.status(201).json({
             userId,
@@ -115,7 +115,7 @@ const updateCartItemQuantity = async (req, res, next) => {
     items.quantity = quantity;
     cart.items[itemIndex] = items;
 
-    calcTotalCartPrice(cart);
+    // calcTotalCartPrice(cart);
 
     await cart.save();
 
