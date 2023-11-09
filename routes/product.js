@@ -14,7 +14,8 @@ const {
     getProductsByCategory,
     filterWithPrice,
     filterByRating,
-    filterByBrand
+    filterByBrand,
+    queryfilterPrdSubSub
 } = require("../controllers/product");
 
 router.post("/", auth, authRole, addNewProduct);
@@ -28,5 +29,6 @@ router.delete("/:id", auth, authRole, deletProductByID);
 router.get('/filterByPrice/:price',filterWithPrice)
 router.get('/filterByRating/:rating',filterByRating)
 router.get('/filterByBrand/:brand',filterByBrand)
+router.get('/subSubCategory/:subSubCategory',queryfilterPrdSubSub)
 
 module.exports = router;
