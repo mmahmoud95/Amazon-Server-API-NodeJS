@@ -154,7 +154,7 @@ const updateUser = async (req, res, next) => {
 };
 const updateUserById = async (req, res, next) => {
     var userID = req.body.id;
-    console.log(userID);
+    // console.log(userID);
     var firstName = req.body.firstName;
     var lastName = req.body.lastName;
     // Verifying if userType and id is present
