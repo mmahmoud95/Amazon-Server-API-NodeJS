@@ -67,7 +67,16 @@ to get product by id
 1-url:http://localhost:3333/products/productId     productId =the _id product you want to get
 
 
-instruction cart
+to get filtred product of sub_subCategory:
+1- url:http://localhost:3333/products/subSubCategory/:subSubCategory
+subSubCategory= _id of subSubCategory
+and then add any thing you need to filter with to the query after "?"
+ex :
+http://localhost:3333/products/subSubCategory/654bcd701fdaee7bb924f416?price[gte]=1000&rating[gt]=4
+
+you can use "gt|gte|lt|lte" or "=" for any field of the product model to filter with
+
+***instruction cart
 for products post,patch,delete after logIn
 
 to create a new cart method post
