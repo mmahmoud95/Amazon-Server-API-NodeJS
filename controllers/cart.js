@@ -43,6 +43,7 @@ const addNewCart = async (req, res) => {
                 // product not exist in cart,  push product to cartItems array
                 cart.items.push({
                     productId: productId,
+                    price: product.price,
                 });
             }
             await cart.save();
@@ -63,6 +64,7 @@ const getCart = async (req, res) => {
     const userId = req.id;
     try {
         const userCart = await cartModel.findOne({ userId: userId });
+
         // console.log(userCart),
         res.status(201).json({
             userId,
@@ -77,7 +79,7 @@ const getCart = async (req, res) => {
 };
 const deleteProductFromCart = async (req, res) => {
     const userId = req.id;
-    const productId = req.body.productId;
+    const productId = req.params.productId;
     try {
         const findCart = await cartModel.findOne({ userId: userId });
         // console.log(findCart);
