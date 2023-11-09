@@ -15,7 +15,7 @@ const {
 } = require("../controllers/product");
 
 router.post("/", auth, authRole, addNewProduct);
-router.get("/result", getFilteredProducts);
+router.post("/result", getFilteredProducts);
 router.get("/", getAllProduct);
 router.get("/:id", getProductById);
 router.get("/category/:category", getProductsByCategory);
