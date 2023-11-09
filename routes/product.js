@@ -12,6 +12,9 @@ const {
     updateProductByID,
     deletProductByID,
     getProductsByCategory,
+    filterWithPrice,
+    filterByRating,
+    filterByBrand
 } = require("../controllers/product");
 
 router.post("/", auth, authRole, addNewProduct);
@@ -22,5 +25,8 @@ router.get("/category/:category", getProductsByCategory);
 router.patch("/:id", auth, authRole, updateProductByID);
 router.delete("/", auth, authRole, deleteAllProducts);
 router.delete("/:id", auth, authRole, deletProductByID);
+router.get('/filterByPrice/:price',filterWithPrice)
+router.get('/filterByRating/:rating',filterByRating)
+router.get('/filterByBrand/:brand',filterByBrand)
 
 module.exports = router;

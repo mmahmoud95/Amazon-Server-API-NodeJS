@@ -159,6 +159,41 @@ const getProductsByCategory = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+//filter products by price :
+const filterWithPrice = async (req,res)=>{
+    
+try{
+const filteredProducts = await productModel.find({price: req.params.price}) 
+res.status(201).json(filteredProducts)
+}catch(error){
+res.status(500).json({ message: error.message });
+
+}
+}
+
+//filter by rating:
+const filterByRating = async (req,res)=>{
+    try{
+    const FoundProducts = await productModel.find({rating: req.params.rating}) 
+    res.status(201).json(FoundProducts)
+    }catch(error){
+    res.status(500).json({ message: error.message });
+    
+    }
+    }
+
+   // filter by brand
+   const filterByBrand = async (req,res)=>{
+    try{
+    const brandProducts = await productModel.find({brand: req.params.brand}) 
+    res.status(201).json(brandProducts)
+    }catch(error){
+    res.status(500).json({ message: error.message });
+    
+    }
+    }
+
 module.exports = {
   addNewProduct,
   getAllProduct,
@@ -168,4 +203,7 @@ module.exports = {
   updateProductByID,
   deletProductByID,
   getProductsByCategory,
+    filterWithPrice,
+    filterByRating,
+    filterByBrand
 };
