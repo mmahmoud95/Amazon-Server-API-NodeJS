@@ -31,9 +31,9 @@ const getAllProduct = async (req, res) => {
 };
 const getFilteredProducts = async (req, res) => {
   const { search } = req.query;
-  console.log(search, "sssssssss");
+  console.log(search, "search value");
   const category = req.body.category;
-  console.log(category, "hhhhhh");
+  console.log(category,"selected");
 
   if (search) {
     try {

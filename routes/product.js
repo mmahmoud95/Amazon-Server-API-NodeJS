@@ -17,7 +17,7 @@ const {
     filterByBrand
 } = require("../controllers/product");
 
-router.post("/", auth, authRole, addNewProduct);
+router.post("/", addNewProduct);
 router.post("/result", getFilteredProducts);
 router.get("/", getAllProduct);
 router.get("/:id", getProductById);
