@@ -1,6 +1,17 @@
+const { log } = require("console");
 const productModel = require("../models/product");
 
 const addNewProduct = async (req, res) => {
+  const product = req.body;
+  try {
+    const newProduct = await productModel.create(product);
+    res.status(201).json({
+      message: "Product Added successfully",
+      data: newProduct,
+    });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
   const product = req.body;
   try {
     const newProduct = await productModel.create(product);
@@ -27,26 +38,61 @@ const getAllProduct = async (req, res) => {
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
+  try {
+    const products = await productModel
+      .find()
+      .populate("category", "name")
+      .populate("subCategory", "name")
+      .populate("subSubCategor", "name");
+    res.status(200).json({
+      message: "Products fetched successfully",
+      data: products,
+    });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
 };
 const getFilteredProducts = async (req, res) => {
   const { search } = req.query;
+  console.log(search, "search value");
+  const category = req.body.category;
+  console.log(category,"selected");
 
   if (search) {
     try {
-      const products = await productModel.find({
-        title: { $regex: search, $options: "i" },
-      });
-      if (products.length > 0) {
-        res.status(200).json({
-          message: "Products fetched successfully",
-          data: products,
+      if (category === "All") {
+        const products = await productModel.find({
+          title: { $regex: search, $options: "i" },
         });
-      } else {
-        res.status(200).json({
-          message: "no products match your search",
-          data: products,
-        });
+        if (products.length > 0) {
+          res.status(200).json({
+            message: "Products fetched successfully",
+            data: products,
+          });
+        } else {
+          res.status(200).json({
+            message: "no products match your search",
+            data: products,
+          });
+        }
       }
+      if (category !== "All") {
+        const products = await productModel.find({category:category,
+          title: { $regex: search, $options: "i" },
+        });
+        if (products.length > 0) {
+          res.status(200).json({
+            message: "Products fetched successfully",
+            data: products,
+          });
+        } else {
+          res.status(200).json({
+            message: "no products match your search",
+            data: products,
+          });
+        }
+      }
+    
     } catch (error) {
       res.status(400).json({ message: error.message });
     }
