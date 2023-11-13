@@ -22,8 +22,7 @@ const addNewCart = async (req, res) => {
     let cart = await cartModel.findOne({ userId: userId });
     try {
         if (!cart) {
-            const newCart = await cartModel.create(cartItems);
-            calcTotalCartPrice(cart);
+            const newCart = await cartModel.create({...cartItems,totalPrice:product.price});
             res.status(201).json({
                 userId,
                 message: "Cart created successfully",
