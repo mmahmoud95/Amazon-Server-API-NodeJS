@@ -11,7 +11,7 @@ const {
 
 router.post("/", auth, addNewCart);
 router.get("/", auth, getCart);
-router.patch("/:itemId", auth, updateCartItemQuantity); 
+router.patch("/", auth, updateCartItemQuantity);
 router.delete("/:productId", auth, deleteProductFromCart);
 
 module.exports = router;

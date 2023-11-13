@@ -12,11 +12,14 @@ const calcTotalCartPrice = (cart) => {
 };
 const addNewCart = async (req, res) => {
     const { productId } = req.body;
+    const { quantity } = req.body;
     const userId = req.id;
     const product = await Product.findById(productId);
     let cartItems = {
         userId: userId,
-        items: [{ productId: productId, price: product.price }],
+        items: [
+            { productId: productId, price: product.price, quantity: quantity },
+        ],
     };
     // console.log(req.id);
     let cart = await cartModel.findOne({ userId: userId });
@@ -24,9 +27,9 @@ const addNewCart = async (req, res) => {
         if (!cart) {
             const newCart = await cartModel.create({
                 ...cartItems,
-                totalPrice: product.price,
+                totalPrice: product.price * quantity,
             });
-            // calcTotalCartPrice(newCart);
+            calcTotalCartPrice(newCart);
             res.status(201).json({
                 userId,
                 message: "Cart created successfully",
@@ -39,13 +42,14 @@ const addNewCart = async (req, res) => {
             );
             if (productIndex > -1) {
                 const cartItem = cart.items[productIndex];
-                cartItem.quantity += 1;
+                cartItem.quantity += quantity;
                 cart.items[productIndex] = cartItem;
             } else {
                 // product not exist in cart,  push product to cartItems array
                 cart.items.push({
                     productId: productId,
                     price: product.price,
+                    quantity: quantity,
                 });
             }
             calcTotalCartPrice(cart);
@@ -61,6 +65,77 @@ const addNewCart = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 };
+
+// const addNewCart = async (req, res) => {
+//     try {
+//         const { productId } = req.body;
+//         const userId = req.id;
+//         const product = await Product.findById(productId);
+
+//         const cartItems = {
+//             userId: userId,
+//             items: [
+//                 { productId: productId, price: product.price, quantity: 1 },
+//             ],
+//         };
+
+//         let cart = await cartModel.findOne({ userId: userId });
+
+//         if (!cart) {
+//             const newCart = await createNewCart(userId, cartItems);
+//             return res.status(201).json({
+//                 userId,
+//                 message: "Cart created successfully",
+//                 data: newCart,
+//                 numOfCartItems: newCart.items.length,
+//             });
+//         } else {
+//             updateCart(cart, productId, product.price);
+//             return res.status(201).json({
+//                 userId,
+//                 message: "Cart updated successfully",
+//                 data: cart,
+//                 numOfCartItems: cart.items.length,
+//             });
+//         }
+//     } catch (error) {
+//         console.error("Error adding/updating cart:", error);
+//         res.status(500).json({ message: "Internal server error" });
+//     }
+// };
+
+// const createNewCart = async (userId, cartItems) => {
+//     const newCart = await cartModel.create({
+//         ...cartItems,
+//         totalPrice: cartItems.items[0].price,
+//     });
+//     return newCart;
+// };
+
+// const updateCart = (cart, productId, productPrice) => {
+//     const productIndex = cart.items.findIndex(
+//         (item) => item.productId.toString() === productId
+//     );
+
+//     if (productIndex > -1) {
+//         const cartItem = cart.items[productIndex];
+//         cartItem.quantity += 1;
+//         cart.items[productIndex] = cartItem;
+//     } else {
+//         cart.items.push({
+//             productId: productId,
+//             price: productPrice,
+//             quantity: 1,
+//         });
+//     }
+
+//     cart.totalPrice = calculateTotalPrice(cart.items);
+//     cart.save();
+// };
+
+// const calculateTotalPrice = (items) => {
+//     return items.reduce((total, item) => total + item.quantity * item.price, 0);
+// };
 
 const getCart = async (req, res) => {
     const userId = req.id;
@@ -125,12 +200,13 @@ const deleteProductFromCart = async (req, res) => {
 // @access  Private/User
 const updateCartItemQuantity = async (req, res, next) => {
     const { quantity } = req.body;
+    const { productId } = req.body;
     const userId = req.id;
 
     const cart = await cartModel.findOne({ userId: userId });
 
     const itemIndex = cart.items.findIndex(
-        (item) => item._id.toString() === req.params.itemId
+        (item) => item.productId.toString() === productId
     );
     const items = cart.items[itemIndex];
     items.quantity = quantity;
