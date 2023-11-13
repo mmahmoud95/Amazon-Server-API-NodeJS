@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const dbConnect = () => {
     mongoose
         .connect(
-            "mongodb+srv://mustafamhmod95:bYrUCQ2Jf6z3ZU8w@amazon.fj4moo9.mongodb.net/Amazon"
+            "mongodb+srv://mustafamhmod95:bYrUCQ2Jf6z3ZU8w@amazon.fj4moo9.mongodb.net/AmazonDB"
         )
         // .connect("mongodb://127.0.0.1:27017/Amazon")
         .then(() => {
