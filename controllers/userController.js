@@ -9,7 +9,7 @@ const signUp = async (req, res) => {
     if (!email || !password || !name || !ConfirmPassword) {
         res.status(500).json({
             message:
-                "please enter your first name and last name and your email and password ",
+                "please enter your  name and your email and password ",
         });
     } else {
         try {
