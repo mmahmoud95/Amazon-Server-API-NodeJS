@@ -95,7 +95,8 @@ const getProductById = async (req, res) => {
     try {
         const product = await productModel
             .findById(id)
-            .populate("category", "name");
+            .populate("category", ["ar", "en"]);
+
         res.status(200).json({
             message: "Product fetched successfully",
             data: product,
@@ -156,7 +157,13 @@ const getProductsByCategory = async (req, res) => {
     const category = req.params.category;
     try {
         const products = await productModel
-            .find({ category: category })
+            .find({
+                $or: [
+                    { category: category },
+                    { subCategory: category },
+                    { subSubCategor: category },
+                ],
+            })
             .populate("category", "name");
         if (products.length !== 0) {
             res.status(200).json({
