@@ -21,7 +21,6 @@ const addNewCart = async (req, res) => {
             { productId: productId, price: product.price, quantity: quantity },
         ],
     };
-    // console.log(req.id);
     let cart = await cartModel.findOne({ userId: userId });
     try {
         if (!cart) {
@@ -36,7 +35,6 @@ const addNewCart = async (req, res) => {
                 data: newCart,
             });
         } else {
-            // console.log(cart.items);
             const productIndex = cart.items.findIndex(
                 (item) => item.productId.toString() === productId
             );
@@ -45,7 +43,6 @@ const addNewCart = async (req, res) => {
                 cartItem.quantity += quantity;
                 cart.items[productIndex] = cartItem;
             } else {
-                // product not exist in cart,  push product to cartItems array
                 cart.items.push({
                     productId: productId,
                     price: product.price,
@@ -53,7 +50,12 @@ const addNewCart = async (req, res) => {
                 });
             }
             calcTotalCartPrice(cart);
-            await cart.save();
+
+            await cartModel.updateOne(
+                { userId: userId },
+                { $set: { items: cart.items, totalPrice: cart.totalPrice } }
+            );
+
             res.status(201).json({
                 userId,
                 message: "Cart update successfully",
