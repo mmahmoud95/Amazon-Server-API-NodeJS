@@ -11,62 +11,137 @@ const calcTotalCartPrice = (cart) => {
     return totalPrice;
 };
 const addNewCart = async (req, res) => {
-    const { productId } = req.body;
-    const { quantity } = req.body;
+    const itemsToAdd = req.body.items; // Assuming the request body contains an array of items [{ productId, quantity }, ...]
     const userId = req.id;
-    const product = await Product.findById(productId);
-    let cartItems = {
-        userId: userId,
-        items: [
-            { productId: productId, price: product.price, quantity: quantity },
-        ],
-    };
-    let cart = await cartModel.findOne({ userId: userId });
+
     try {
+        let cart = await cartModel.findOne({ userId: userId });
+
         if (!cart) {
+            const newCartItems = [];
+
+            for (const item of itemsToAdd) {
+                const product = await Product.findById(item.productId);
+                newCartItems.push({
+                    productId: item.productId,
+                    price: product.price,
+                    quantity: item.quantity,
+                });
+            }
+
             const newCart = await cartModel.create({
-                ...cartItems,
-                totalPrice: product.price * quantity,
+                userId: userId,
+                items: newCartItems,
+                totalPrice: calculateTotalPrice(newCartItems),
             });
+
             calcTotalCartPrice(newCart);
-            res.status(201).json({
+            return res.status(201).json({
                 userId,
                 message: "Cart created successfully",
                 data: newCart,
             });
         } else {
-            const productIndex = cart.items.findIndex(
-                (item) => item.productId.toString() === productId
-            );
-            if (productIndex > -1) {
-                const cartItem = cart.items[productIndex];
-                cartItem.quantity += quantity;
-                cart.items[productIndex] = cartItem;
-            } else {
-                cart.items.push({
-                    productId: productId,
-                    price: product.price,
-                    quantity: quantity,
-                });
+            // If the cart exists, update it with the provided items
+            for (const item of itemsToAdd) {
+                const productIndex = cart.items.findIndex(
+                    (cartItem) =>
+                        cartItem.productId.toString() === item.productId
+                );
+
+                if (productIndex > -1) {
+                    // If the item exists in the cart, update its quantity
+                    cart.items[productIndex].quantity += item.quantity;
+                } else {
+                    // If the item doesn't exist, add it to the cart
+                    const product = await Product.findById(item.productId);
+                    cart.items.push({
+                        productId: item.productId,
+                        price: product.price,
+                        quantity: item.quantity,
+                    });
+                }
             }
+
             calcTotalCartPrice(cart);
+            await cart.save();
 
-            await cartModel.updateOne(
-                { userId: userId },
-                { $set: { items: cart.items, totalPrice: cart.totalPrice } }
-            );
-
-            res.status(201).json({
+            return res.status(201).json({
                 userId,
-                message: "Cart update successfully",
+                message: "Cart updated successfully",
                 data: cart,
-                numOfCartItems: cart.items.length,
+                // numOfCartItems: cart.items.length,
             });
         }
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        return res.status(400).json({ message: error.message });
     }
 };
+
+// Calculate total price based on items
+const calculateTotalPrice = (items) => {
+    return items.reduce((total, item) => {
+        return total + item.price * item.quantity;
+    }, 0);
+};
+
+// const addNewCart = async (req, res) => {
+//     const { productId } = req.body;
+//     const { quantity } = req.body;
+//     const userId = req.id;
+//     const product = await Product.findById(productId);
+//     let cartItems = {
+//         userId: userId,
+//         items: [
+//             { productId: productId, price: product.price, quantity: quantity },
+//         ],
+//     };
+//     let cart = await cartModel.findOne({ userId: userId });
+//     try {
+//         if (!cart) {
+//             const newCart = await cartModel.create({
+//                 ...cartItems,
+//                 totalPrice: product.price * quantity,
+//             });
+//             calcTotalCartPrice(newCart);
+//             res.status(201).json({
+//                 userId,
+//                 message: "Cart created successfully",
+//                 data: newCart,
+//             });
+//         } else {
+//             const productIndex = cart.items.findIndex(
+//                 (item) => item.productId.toString() === productId
+//             );
+//             if (productIndex > -1) {
+//                 const cartItem = cart.items[productIndex];
+//                 cartItem.quantity += quantity;
+//                 cart.items[productIndex] = cartItem;
+//             } else {
+//                 cart.items.push({
+//                     productId: productId,
+//                     price: product.price,
+//                     quantity: quantity,
+//                 });
+//             }
+//             calcTotalCartPrice(cart);
+
+//             await cartModel.updateOne(
+//                 { userId: userId },
+//                 { $set: { items: cart.items, totalPrice: cart.totalPrice } }
+//             );
+
+//             res.status(201).json({
+//                 userId,
+//                 message: "Cart update successfully",
+//                 data: cart,
+//                 numOfCartItems: cart.items.length,
+//             });
+//         }
+//     } catch (error) {
+//         res.status(400).json({ message: error.message });
+//     }
+// };
 
 // const addNewCart = async (req, res) => {
 //     try {
@@ -228,7 +303,7 @@ const updateCartItemQuantity = async (req, res, next) => {
 
     res.status(200).json({
         status: "success",
-        numOfCartItems: cart.items.length,
+        // numOfCartItems: cart.items.length,
         data: cart,
     });
 };
