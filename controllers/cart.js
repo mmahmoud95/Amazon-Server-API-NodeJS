@@ -142,7 +142,9 @@ const addNewCart = async (req, res) => {
 const getCart = async (req, res) => {
     const userId = req.id;
     try {
-        const userCart = await cartModel.findOne({ userId: userId });
+        const userCart = await cartModel
+            .findOne({ userId: userId })
+            .populate({ path: "items.productId", model: "Product" });
         // console.log(userCart),
         res.status(201).json({
             userId,
@@ -180,13 +182,19 @@ const getCart = async (req, res) => {
 // };
 
 const deleteProductFromCart = async (req, res) => {
-    const cart = await cartModel.findOneAndUpdate(
-        { userId: req.id },
-        {
-            $pull: { items: { productId: req.params.productId } },
-        },
-        { new: true }
-    );
+    const cart = await cartModel
+        .findOneAndUpdate(
+            { userId: req.id },
+            {
+                $pull: { items: { productId: req.params.productId } },
+            },
+            { new: true }
+        )
+        .populate({
+            path: "items.productId",
+            model: "Product", // Replace 'Product' with the actual name of your product model
+            // select: "productName price", // Select the fields you want to populate in the product
+        });
 
     calcTotalCartPrice(cart);
     cart.save();
