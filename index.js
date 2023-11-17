@@ -53,7 +53,7 @@ app.use("/", (req, res, next) => {
 });
 
 //port
-const port = 3333;
+const port = 3000;
 app.listen(port, () => {
     console.log("server listen", port);
 });
