@@ -52,7 +52,7 @@ const getFilteredProducts = async (req, res) => {
         try {
             if (category === "All") {
                 const products = await productModel.find({
-                    title: { $regex: search, $options: "i" },
+                    "en.title": { $regex: search, $options: "i" },
                 });
                 if (products.length > 0) {
                     res.status(200).json({
