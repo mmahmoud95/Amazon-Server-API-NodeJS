@@ -5,7 +5,39 @@ const { updateCart } = require("./cart");
 const { userModel } = require("../models/userModel");
 const { now } = require("mongoose");
 //stripe
-const stripe = require("stripe")(process.env.STRIPE_SECRET);
+// for payments
+const REACT_APP_STRIPE_KEY=''
+const stripe=require('stripe')('sk_test_51OCi3SLRQrL1VrZsS1Z2bMUBzCObvHUleDCXJjhZ1kVlQ0L5qOGGJJ2yyR4S6st1zq2HHDlcUaQxEj0jEjABV4rz00SEg6lilW')
+
+// pay with stripe
+const payByStripe= async(req,res)=>{
+  const userId = req.id;
+
+  const {amount, productPrice,productId}=req.body
+  const cartItem=[{
+    productId,
+    quantity:1,
+    price:productPrice
+  }]
+  try{
+    const paymentIntent=await stripe.paymentIntents.create({
+      amount,
+      currency:'usd'
+    })
+        //create order with default payment method stripe:
+        const order = await orderModel.create({
+          user: userId,
+          cartItems: cartItem,
+          totalOrderPrice: productPrice,
+        });
+    res.status(200).send(paymentIntent.client_secret)
+
+  }catch(error){
+    console.log(error);
+    res.status(500).json({message:error.message})
+  }
+}
+
 
 //create cash order
 const createCashOrder = async (req, res) => {
@@ -266,4 +298,5 @@ module.exports = {
   updateOrderToPaid,
   updateOrderTODelivered,
   chechOutSession,
+  payByStripe,
 };
