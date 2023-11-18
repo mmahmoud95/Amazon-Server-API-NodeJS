@@ -12,7 +12,7 @@ const dbConnect = () => {
             console.log("connected to Amazon_Data_Base successfully");
         })
         .catch((err) => {
-            console.log(err);
+            console.log(err,"could not connect to Amazon db");
         });
 };
 
