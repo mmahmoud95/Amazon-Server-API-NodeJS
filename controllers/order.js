@@ -16,6 +16,7 @@ const payByStripe = async (req, res) => {
   const userId = req.id;
   const { amount, orderData, product, payMethod, cartID } = req.body;
   const { city, street, province, zip } = orderData;
+  console.log(cartID);
   // Check if any product in the cart or single product lacks the 'quantity' property
   const hasQuantityObject = product.some(
     (item) => typeof item === "object" && "quantityInStock" in item
