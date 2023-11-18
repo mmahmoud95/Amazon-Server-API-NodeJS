@@ -104,6 +104,64 @@ const logIn = async (req, res) => {
         }
     }
 };
+////login for admin only///
+const logInAdmin = async (req, res) => {
+    const email = req.body.email;
+    const password = req.body.password;
+  
+    if (!email || !password) {
+      res.status(400).json({
+        message: "Please enter your email and password",
+      });
+    } else {
+      try {
+        let user = await userModel.findOne({ email });
+  
+        if (!user) {
+          res.status(200).json({
+            message: "You have to sign up first",
+          });
+          return;
+        }
+  
+        let passCheck = await bcrypt.compare(password, user.password);
+  
+        if (passCheck) {
+          if (user.userType === 'admin') {
+            let token = jwt.sign(
+              {
+                id: user._id,
+                email: user.email,
+                userType: user.userType,
+              },
+              "amazonCloneProject",
+              { expiresIn: "24h" }
+            );
+  
+            res.status(200).json({
+              message: "Welcome to our site",
+              yourToken: token,
+              name: user.name,
+            });
+          } else {
+            res.status(403).json({
+              message: "You do not have admin privileges",
+            });
+          }
+        } else {
+          res.status(401).json({
+            message: "Invalid email or password",
+          });
+        }
+      } catch (err) {
+        res.status(500).json({
+          message: "Internal server error",
+          error: err,
+        });
+      }
+    }
+  };
+  
 // delete user by id
 const deleteUser = async (req, res, next) => {
     //
@@ -206,5 +264,5 @@ module.exports = {
     deleteUser,
     updateUserById,
     updateUser,
-    CheckEmail,updateUserAddressById
+    CheckEmail,updateUserAddressById,logInAdmin
 };

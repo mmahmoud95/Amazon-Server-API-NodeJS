@@ -31,7 +31,7 @@ const subcategoryRout = require("./routes/subcategory");
 const subSubCategoryRout = require("./routes/InternalSubCategory");
 
 const userRoutes = require("./routes/userRoute");
-
+const reviewRoutes = require("./routes/reviews");
 const productRout = require("./routes/product");
 const cartRout = require("./routes/cart");
 const orderRoutes = require("./routes/order");
@@ -51,12 +51,16 @@ app.use("/products", productRout);
 //for order:
 app.use("/order", orderRoutes);
 
+// for reviews
+
+app.use("/review", reviewRoutes);
+
 app.use("/", (req, res, next) => {
     res.status(404).json("url not found");
 });
 
 //port
-const port = 3333;
+const port = 3000;
 app.listen(port, () => {
     console.log("server listen", port);
 });
