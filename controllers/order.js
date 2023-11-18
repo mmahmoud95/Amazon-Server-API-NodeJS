@@ -9,13 +9,12 @@ const { now } = require("mongoose");
 const REACT_APP_STRIPE_KEY = "";
 const stripe = require("stripe")(process.env.REACT_APP_STRIPE_KEY);
 
-
 // pay with stripe
 const payByStripe = async (req, res) => {
   const taxPrice = 0;
   const shippingPrice = 0;
   const userId = req.id;
-  const { amount, orderData, product, payMethod ,cartID} = req.body;
+  const { amount, orderData, product, payMethod, cartID } = req.body;
   const { city, street, province, zip } = orderData;
   // Check if any product in the cart or single product lacks the 'quantity' property
   const hasQuantityObject = product.some(
@@ -25,7 +24,7 @@ const payByStripe = async (req, res) => {
   console.log(req.body);
 
   try {
-    const cartPrice = amount/100;
+    const cartPrice = amount / 100;
     const totalOrderPrice = cartPrice + taxPrice + shippingPrice;
 
     //create order with default payment method (cash):
@@ -43,6 +42,7 @@ const payByStripe = async (req, res) => {
           quantity: item.quantity,
           price: item.price,
         })),
+        isPaid: true,
         paymentMethodType: payMethod,
         totalOrderPrice: totalOrderPrice,
       });
@@ -50,14 +50,18 @@ const payByStripe = async (req, res) => {
       //clear cart:
       if (cartID) {
         console.log(cartID);
-        const deletedCart =  await cartModel.findByIdAndDelete(cartID );
+        const deletedCart = await cartModel.findByIdAndDelete(cartID);
       }
       //response user:
-      console.log(paymentIntent.client_secret,"key");
-      res.status(201).json({ message: "order success", data: order,key:paymentIntent.client_secret });
+      console.log(paymentIntent.client_secret, "key");
+      res.status(201).json({
+        message: "order success",
+        data: order,
+        key: paymentIntent.client_secret,
+      });
     } else {
       const { quantity } = req.body.product[1];
-      const totalPrice = quantity * (amount/100);
+      const totalPrice = quantity * (amount / 100);
       console.log("single product", quantity, totalPrice);
       const paymentIntent = await stripe.paymentIntents.create({
         amount,
@@ -71,11 +75,16 @@ const payByStripe = async (req, res) => {
           quantity: quantity,
           price: product[0].price,
         },
+        isPaid: true,
         paymentMethodType: payMethod,
         totalOrderPrice: totalPrice,
       });
-      console.log(paymentIntent.client_secret,"key");
-      res.status(201).json({ message: "order success", data: order2,key:paymentIntent.client_secret });
+      console.log(paymentIntent.client_secret, "key");
+      res.status(201).json({
+        message: "order success",
+        data: order2,
+        key: paymentIntent.client_secret,
+      });
     }
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -88,7 +97,7 @@ const createCashOrder = async (req, res) => {
   const taxPrice = 0;
   const shippingPrice = 0;
   const userId = req.id;
-  const { amount, orderData, product, payMethod,cartID } = req.body;
+  const { amount, orderData, product, payMethod, cartID } = req.body;
   const { city, street, province, zip } = orderData;
   // Check if any product in the cart or single product lacks the 'quantity' property
   const hasQuantityObject = product.some(
@@ -118,7 +127,7 @@ const createCashOrder = async (req, res) => {
       //clear cart:
       if (cartID) {
         console.log(cartID);
-        const deletedCart =  await cartModel.findByIdAndDelete(cartID );
+        const deletedCart = await cartModel.findByIdAndDelete(cartID);
       }
       //response user:
       res.status(201).json({ message: "order success", data: order });
@@ -144,6 +153,24 @@ const createCashOrder = async (req, res) => {
     console.log(error);
   }
 };
+// delete order by id
+const deleteOrder=async (req, res) => {
+  const orderId = req.params.orderId;
+  console.log(orderId,"delete");
+
+  try {
+    const deletedOrder = await orderModel.findByIdAndDelete(orderId);
+
+    if (deletedOrder) {
+      return res.status(204).json({ message: 'Order deleted successfully' });
+    } else {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+  } catch (error) {
+    console.error('Error deleting order:', error);
+    return res.status(500).json({ message: 'Internal Server Error' });
+  }
+}
 
 //get all orders for admin :
 const getAllOrders = async (req, res) => {
@@ -171,7 +198,9 @@ const getSpecificUserOrder = async (req, res) => {
     }
 
     // Find orders which have this userid:
-    const orders = await orderModel.find({ user: userId }).populate('cartItems.productId');
+    const orders = await orderModel
+      .find({ user: userId })
+      .populate("cartItems.productId");
     console.log(orders, "kiiii");
     return res.status(200).json(orders);
   } catch (error) {
@@ -344,6 +373,7 @@ module.exports = {
   createCashOrder,
   getAllOrders,
   getSpecificUserOrder,
+  deleteOrder,
   updateOrderToPaid,
   updateOrderTODelivered,
   chechOutSession,
