@@ -3,6 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
 var corsMiddleware = require("cors");
+require('dotenv').config();
 
 const dotenv = require("dotenv");
 //config.env

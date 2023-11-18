@@ -7,11 +7,11 @@ const {authRole}=require('../middlewares/adminAuth');
 router.post('/',auth,payByStripe);
 
 //create cash order:
-router.post('/:cartId',auth,createCashOrder);
+router.post('/cash',auth,createCashOrder);
 //get all orders by admin:
 router.get('/allOrders',auth,authRole,getAllOrders);
 //get spesific order by user id:
-router.get("/userOrders/:userId",auth,getSpecificUserOrder);
+router.get("/userOrders",auth,getSpecificUserOrder);
 //update order paid status to paid using order id (by admin):
 router.patch("/updateOrderToPaid/:orderId",auth,authRole,updateOrderToPaid);
 //update order isDelivered status to Delivered using order id (by admin):
