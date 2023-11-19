@@ -5,6 +5,10 @@ const orderSchema = mongoose.Schema({
         ref:'User',
         required:true
     },
+    name:{
+        type:String,
+        minlength: 4,
+    },
     cartItems:[
         {
             productId: {

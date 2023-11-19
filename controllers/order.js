@@ -15,7 +15,7 @@ const payByStripe = async (req, res) => {
   const shippingPrice = 0;
   const userId = req.id;
   const { amount, orderData, product, payMethod, cartID } = req.body;
-  const { city, street, province, zip } = orderData;
+  const { city, street, province, zip ,fullName} = orderData;
   console.log(cartID);
   // Check if any product in the cart or single product lacks the 'quantity' property
   const hasQuantityObject = product.some(
@@ -37,6 +37,7 @@ const payByStripe = async (req, res) => {
 
       const order = await orderModel.create({
         user: userId,
+        name:fullName,
         shippingAddress: { street, province, zip, city },
         cartItems: product.map((item) => ({
           productId: item.productId,
@@ -69,7 +70,8 @@ const payByStripe = async (req, res) => {
         currency: "usd",
       });
       const order2 = await orderModel.create({
-        user: userId,
+        user: userId,      
+        name:fullName,
         shippingAddress: { street, province, zip, city },
         cartItems: {
           productId: product[0]._id,
@@ -99,7 +101,7 @@ const createCashOrder = async (req, res) => {
   const shippingPrice = 0;
   const userId = req.id;
   const { amount, orderData, product, payMethod, cartID } = req.body;
-  const { city, street, province, zip } = orderData;
+  const { city, street, province, zip,fullName } = orderData;
   // Check if any product in the cart or single product lacks the 'quantity' property
   const hasQuantityObject = product.some(
     (item) => typeof item === "object" && "quantityInStock" in item
@@ -115,6 +117,7 @@ const createCashOrder = async (req, res) => {
     if (product && !hasQuantityObject) {
       const order = await orderModel.create({
         user: userId,
+        name:fullName,
         shippingAddress: { street, province, zip, city },
         cartItems: product.map((item) => ({
           productId: item.productId,
@@ -138,6 +141,7 @@ const createCashOrder = async (req, res) => {
       console.log("single product", quantity, totalPrice);
       const order2 = await orderModel.create({
         user: userId,
+        name:fullName,
         shippingAddress: { street, province, zip, city },
         cartItems: {
           productId: product[0]._id,
