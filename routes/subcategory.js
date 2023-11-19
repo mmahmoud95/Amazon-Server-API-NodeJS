@@ -14,7 +14,7 @@ router.get("/login/sub",auth,getallSubcategory)
 router.get('/login/sub/:id',auth,getSubcategoryByid)
 
 //get subcategories of specific category:
-router.get('/sub/:categoryId',subOfCategory)
+router.get('/subs/:categoryId',subOfCategory)
 //to save new Subcategory by admin
 router.post('/login/sub/save',auth,authRole,saveSubcategory)
 

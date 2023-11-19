@@ -238,6 +238,105 @@ const filterByBrand = async (req, res) => {
   }
 };
 
+
+
+
+// filtering products of specific category by query string:
+const queryfilterPrdOfCategory = async (req, res) => {
+  //filtering
+  console.log(req.query);
+const queryObj = { ...req.query };
+console.log(queryObj);
+const queryFields = ["page","limit","skip"];
+queryFields.forEach((field)=>delete queryObj[field]);
+console.log(queryFields);
+
+//converting {gte,gt,lt,lte} to {$gte, $gt, $lt, $lte}
+let queryStr= JSON.stringify(queryObj)
+console.log(queryStr);
+//regEx: "\b \b" means the same word with exact letters (not a piece of word) ,
+//"g" means any count of this words 
+queryStr = queryStr.replace(/\b(gt|gte|lt|lte)\b/g ,(match)=>`$${match}`)
+//pagination
+const page = req.query.page * 1 || 1;
+const limit = req.query.limit * 1 ;
+const skip = (page - 1) * limit || req.query.skip;
+
+try {
+  const products = await productModel
+    .find(JSON.parse(queryStr))
+    .where("category")
+    .equals(req.params.categoryId)
+    .skip(skip)
+    .limit(limit)
+    .populate("category", "name");
+  if (products.length !== 0) {
+    res.status(200).json({
+      message: "Product fetched successfully",
+      results: products.length,
+      page,
+      data: products,
+    });
+  } else {
+    res.status(404).json({
+      message: "no data",
+    });
+  }
+} catch (error) {
+  res.status(400).json({ message: error.message });
+}
+};
+
+
+
+// filtering products of specific subcategory by query string:
+const queryfilterPrdOfSubCategory = async (req, res) => {
+  //filtering
+  console.log(req.query);
+const queryObj = { ...req.query };
+console.log(queryObj);
+const queryFields = ["page","limit","skip"];
+queryFields.forEach((field)=>delete queryObj[field]);
+console.log(queryFields);
+
+//converting {gte,gt,lt,lte} to {$gte, $gt, $lt, $lte}
+let queryStr= JSON.stringify(queryObj)
+console.log(queryStr);
+//regEx: "\b \b" means the same word with exact letters (not a piece of word) ,
+//"g" means any count of this words 
+queryStr = queryStr.replace(/\b(gt|gte|lt|lte)\b/g ,(match)=>`$${match}`)
+//pagination
+const page = req.query.page * 1 || 1;
+const limit = req.query.limit * 1 || 20;
+const skip = (page - 1) * limit || req.query.skip;
+
+try {
+  const products = await productModel
+    .find(JSON.parse(queryStr))
+    .where("subCategory")
+    .equals(req.params.subCategoryId)
+    .skip(skip)
+    .limit(limit)
+    .populate("category", "name");
+  if (products.length !== 0) {
+    res.status(200).json({
+      message: "Product fetched successfully",
+      results: products.length,
+      page,
+      data: products,
+    });
+  } else {
+    res.status(404).json({
+      message: "no data",
+    });
+  }
+} catch (error) {
+  res.status(400).json({ message: error.message });
+}
+};
+
+
+
 // filtering products of sub_sub category by query string:
 const queryfilterPrdSubSub = async (req, res) => {
   //filtering
@@ -297,4 +396,6 @@ module.exports = {
   filterByRating,
   filterByBrand,
   queryfilterPrdSubSub,
+  queryfilterPrdOfCategory,
+  queryfilterPrdOfSubCategory
 };
