@@ -15,7 +15,9 @@ const {
     filterWithPrice,
     filterByRating,
     filterByBrand,
-    queryfilterPrdSubSub
+    queryfilterPrdSubSub,
+    queryfilterPrdOfCategory,
+    queryfilterPrdOfSubCategory
 } = require("../controllers/product");
 
 router.post("/", auth, authRole, addNewProduct);
@@ -30,5 +32,7 @@ router.get('/filterByPrice/:price',filterWithPrice)
 router.get('/filterByRating/:rating',filterByRating)
 router.get('/filterByBrand/:brand',filterByBrand)
 router.get('/subSubCategory/:subSubCategory',queryfilterPrdSubSub)
+router.get('/categoryPrd/:categoryId',queryfilterPrdOfCategory)
+router.get('/subCategoryPrd/:subCategoryId',queryfilterPrdOfSubCategory)
 
 module.exports = router;

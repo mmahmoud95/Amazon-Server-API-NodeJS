@@ -39,11 +39,11 @@ const getSubcategoryByid = async (req, res) => {
 // //get subcategories of specific category:
 
 const subOfCategory = async (req,res)=>{
-    var parentCategory = req.params.id
+    const parentCategory = req.params.categoryId
     console.log(parentCategory);
     try{
-        const subCtegories = await subCategorymodel.find(parentCategory).populate("categoryid")
-        res.status(201).json(subCtegories)
+        const subCtegories = await subCategorymodel.find( {categoryid : parentCategory}).populate("categoryid")
+        res.status(201).json({data:subCtegories})
     }catch{
         res.status(500).json({ message: error.message });
     }
