@@ -3,6 +3,7 @@ const productModel = require("../models/product");
 
 const addNewProduct = async (req, res) => {
   const product = req.body;
+  log(product, "gggggg");
   try {
     const newProduct = await productModel.create(product);
     res.status(201).json({
@@ -10,6 +11,7 @@ const addNewProduct = async (req, res) => {
       data: newProduct,
     });
   } catch (error) {
+    log(error);
     res.status(400).json({ message: error.message });
   }
 };
@@ -90,7 +92,7 @@ const getFilteredProducts = async (req, res) => {
         }
       } else if (category !== "All" && lang === "ar") {
         const products = await productModel.find({
-            category: category,
+          category: category,
           "ar.title": { $regex: new RegExp(search, "iu") },
         });
         if (products.length > 0) {
@@ -127,24 +129,47 @@ const getProductById = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+const getProductByIdForDashboard = async (req, res) => {
+  const id = req.params.id;
+  console.log(id);
+  try {
+    const product = await productModel.findById(id);
 
+    res.status(200).json({
+      message: "Product fetched successfully",
+      data: product,
+    });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+// update product by id
 const updateProductByID = async (req, res) => {
   const id = req.params.id;
-  const { title } = req.body;
-  const { descreption } = req.body;
-  const { imageUrl } = req.body;
-  const { quantity } = req.body;
-  const { price } = req.body;
-  const { category } = req.body;
+  console.log(req.body);
+  const english = req.body.en;
+  const arabic = req.body.ar;
 
+  const {
+    thumbnail,
+    quantityInStock,
+    price,
+    category,
+    subCategory,
+    subSubCategor,
+    images,
+  } = req.body;
   try {
     const product = await productModel.findByIdAndUpdate(id, {
-      title,
-      descreption,
-      imageUrl,
-      quantity,
+      en: english,
+      ar: arabic,
+      thumbnail,
+      images,
+      quantityInStock,
       price,
       category,
+      subCategory,
+      subSubCategor,
     });
     res.status(200).json({
       message: "Product updated successfully",
@@ -386,6 +411,7 @@ const queryfilterPrdSubSub = async (req, res) => {
 module.exports = {
   addNewProduct,
   getAllProduct,
+  getProductByIdForDashboard,
   getFilteredProducts,
   deleteAllProducts,
   getProductById,
