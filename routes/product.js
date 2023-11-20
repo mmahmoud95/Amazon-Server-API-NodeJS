@@ -15,15 +15,17 @@ const {
     filterWithPrice,
     filterByRating,
     filterByBrand,
-    queryfilterPrdSubSub
+    queryfilterPrdSubSub,
+    getProductByIdForDashboard
 } = require("../controllers/product");
 
 router.post("/", addNewProduct);
 router.post("/result", getFilteredProducts);
-router.get("/", getAllProduct);
+// router.get("/", getAllProduct);
 router.get("/:id", getProductById);
+router.get("/admin/:id",getProductByIdForDashboard);
 router.get("/category/:category", getProductsByCategory);
-router.patch("/:id", auth, authRole, updateProductByID);
+router.patch("/:id",  updateProductByID);
 router.delete("/", auth, authRole, deleteAllProducts);
 router.delete("/:id", auth, authRole, deletProductByID);
 router.get('/filterByPrice/:price',filterWithPrice)
