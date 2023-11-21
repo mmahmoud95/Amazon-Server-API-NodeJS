@@ -60,7 +60,7 @@ app.use("/", (req, res, next) => {
 });
 
 //port
-const port = 3000;
+const port = 3333;
 app.listen(port, () => {
     console.log("server listen", port);
 });
