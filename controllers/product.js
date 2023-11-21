@@ -16,13 +16,10 @@ const addNewProduct = async (req, res) => {
   }
 };
 
-const getAllProduct = async (req, res) => {
+const getAllProductForAdmin = async (req, res) => {
+  const { id } = req;
   try {
-    const products = await productModel
-      .find()
-      .populate("category", "name")
-      .populate("subCategory", "name")
-      .populate("subSubCategor", "name");
+    const products = await productModel.find({ createdBy: id });
     res.status(200).json({
       message: "Products fetched successfully",
       data: products,
@@ -30,6 +27,8 @@ const getAllProduct = async (req, res) => {
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
+};
+const getAllProduct = async (req, res) => {
   try {
     const products = await productModel
       .find()
@@ -64,12 +63,10 @@ const getFilteredProducts = async (req, res) => {
               message: "Products fetched successfully",
               data: products,
             });
-          }else{
-            res.status(200).json({ message: "not found" ,data: products});
-
+          } else {
+            res.status(200).json({ message: "not found", data: products });
           }
-          
-        } else if (category !== "All" ) {
+        } else if (category !== "All") {
           const products = await productModel.find({
             category: category,
             "en.title": { $regex: search, $options: "i" },
@@ -79,9 +76,8 @@ const getFilteredProducts = async (req, res) => {
               message: "Products fetched successfully",
               data: products,
             });
-          }else{
-            res.status(200).json({ message: "not found" ,data: products});
-
+          } else {
+            res.status(200).json({ message: "not found", data: products });
           }
         }
       } else if (category === "All" && lang === "ar") {
@@ -409,75 +405,79 @@ const queryfilterPrdSubSub = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
- 
-
 
 ////////////////////////////////////
 const Product = require("../models/product");
 
 // Controller function to create a product for a specific admin
 const createProduct = async (req, res) => {
-    try {
-        const  user  = req.id;
+  try {
+    const user = req.id;
 
-        // Check if the user is an admin
-        // if (user.userType !== 'admin') {
-        //     return res.status(403).json({ message: "Access denied. User is not an admin." });
-        // }
+    // Check if the user is an admin
+    // if (user.userType !== 'admin') {
+    //     return res.status(403).json({ message: "Access denied. User is not an admin." });
+    // }
 
-        const product = new Product({
-            ...req.body,
-            createdBy: user,
-        });
+    const product = new Product({
+      ...req.body,
+      createdBy: user,
+    });
 
-        const savedProduct = await product.save();
-        res.json(savedProduct);
-    } catch (error) {
-        res.status(400).json({ message: error.message });
-    }
+    const savedProduct = await product.save();
+    res.json(savedProduct);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
 };
 
 // Controller function to get products for a specific admin
 const getProductsByAdmin = async (req, res) => {
-    try {
-        const { user } = req;
+  try {
+    const { user } = req;
 
-        // Check if the user is an admin
-        if (user.userType !== 'admin') {
-            return res.status(403).json({ message: "Access denied. User is not an admin." });
-        }
-
-        const products = await Product.find({ createdBy: user._id });
-        res.json(products);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
+    // Check if the user is an admin
+    if (user.userType !== "admin") {
+      return res
+        .status(403)
+        .json({ message: "Access denied. User is not an admin." });
     }
+
+    const products = await Product.find({ createdBy: user._id });
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 // Controller function to delete a product for a specific admin
 const deleteProductByAdmin = async (req, res) => {
-    try {
-        const { user } = req;
-        const { productId } = req.params;
+  try {
+    const { user } = req;
+    const { productId } = req.params;
 
-        // Check if the user is an admin
-        if (user.userType !== 'admin') {
-            return res.status(403).json({ message: "Access denied. User is not an admin." });
-        }
-
-        const deletedProduct = await Product.findOneAndDelete({
-            _id: productId,
-            createdBy: user._id,
-        });
-
-        if (!deletedProduct) {
-            return res.status(404).json({ message: "Product not found or you don't have permission to delete it." });
-        }
-
-        res.json(deletedProduct);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
+    // Check if the user is an admin
+    if (user.userType !== "admin") {
+      return res
+        .status(403)
+        .json({ message: "Access denied. User is not an admin." });
     }
+
+    const deletedProduct = await Product.findOneAndDelete({
+      _id: productId,
+      createdBy: user._id,
+    });
+
+    if (!deletedProduct) {
+      return res.status(404).json({
+        message: "Product not found or you don't have permission to delete it.",
+      });
+    }
+
+    res.json(deletedProduct);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 // module.exports = {
@@ -488,18 +488,10 @@ const deleteProductByAdmin = async (req, res) => {
 
 //////////////////////////////////
 
-
-
-
-
-
-
-
-
-
-
-
 module.exports = {
+  createProduct,
+  getProductsByAdmin,
+  deleteProductByAdmin,
   addNewProduct,
   getAllProduct,
   getProductByIdForDashboard,
@@ -515,4 +507,5 @@ module.exports = {
   queryfilterPrdSubSub,
   queryfilterPrdOfCategory,
   queryfilterPrdOfSubCategory,
+  getAllProductForAdmin,
 };
