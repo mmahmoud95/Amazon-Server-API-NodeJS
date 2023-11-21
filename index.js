@@ -3,13 +3,11 @@ const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
 var corsMiddleware = require("cors");
-require('dotenv').config();
+require("dotenv").config();
 
 const dotenv = require("dotenv");
 //config.env
 dotenv.config({ path: "config.env" });
-
-
 
 // for connect to mongoDB
 const { dbConnect } = require("./config/dbConnection");
@@ -60,7 +58,7 @@ app.use("/", (req, res, next) => {
 });
 
 //port
-const port = 3333;
+const port = 3000;
 app.listen(port, () => {
     console.log("server listen", port);
 });

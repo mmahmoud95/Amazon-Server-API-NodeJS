@@ -41,13 +41,13 @@ router.get('/categoryPrd/:categoryId',queryfilterPrdOfCategory)
 router.get('/subCategoryPrd/:subCategoryId',queryfilterPrdOfSubCategory)
 // router.use(auth);
 
-router.post("/addbyAd", auth, authRole, createProduct);
+// router.post("/addbyAd", auth, authRole, createProduct);
 
 // GET /products - Only admin can get their products
-router.get("/", auth, authRole, getProductsByAdmin);
+// router.get("/", auth, authRole, getProductsByAdmin);
 
 // DELETE /products/:productId - Only admin can delete their product
-router.delete("/:productId", auth, authRole, deleteProductByAdmin);
+// router.delete("/:productId", auth, authRole, deleteProductByAdmin);
 
 
 
