@@ -407,6 +407,95 @@ const queryfilterPrdSubSub = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+ 
+
+
+////////////////////////////////////
+const Product = require("../models/product");
+
+// Controller function to create a product for a specific admin
+const createProduct = async (req, res) => {
+    try {
+        const  user  = req.id;
+
+        // Check if the user is an admin
+        // if (user.userType !== 'admin') {
+        //     return res.status(403).json({ message: "Access denied. User is not an admin." });
+        // }
+
+        const product = new Product({
+            ...req.body,
+            createdBy: user,
+        });
+
+        const savedProduct = await product.save();
+        res.json(savedProduct);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+// Controller function to get products for a specific admin
+const getProductsByAdmin = async (req, res) => {
+    try {
+        const { user } = req;
+
+        // Check if the user is an admin
+        if (user.userType !== 'admin') {
+            return res.status(403).json({ message: "Access denied. User is not an admin." });
+        }
+
+        const products = await Product.find({ createdBy: user._id });
+        res.json(products);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// Controller function to delete a product for a specific admin
+const deleteProductByAdmin = async (req, res) => {
+    try {
+        const { user } = req;
+        const { productId } = req.params;
+
+        // Check if the user is an admin
+        if (user.userType !== 'admin') {
+            return res.status(403).json({ message: "Access denied. User is not an admin." });
+        }
+
+        const deletedProduct = await Product.findOneAndDelete({
+            _id: productId,
+            createdBy: user._id,
+        });
+
+        if (!deletedProduct) {
+            return res.status(404).json({ message: "Product not found or you don't have permission to delete it." });
+        }
+
+        res.json(deletedProduct);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// module.exports = {
+//     createProduct,
+//     getProductsByAdmin,
+//     deleteProductByAdmin,
+// };
+
+//////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
 
 module.exports = {
   addNewProduct,
@@ -424,4 +513,7 @@ module.exports = {
   queryfilterPrdSubSub,
   queryfilterPrdOfCategory,
   queryfilterPrdOfSubCategory
+  ,   createProduct,
+  getProductsByAdmin,
+  deleteProductByAdmin,
 };

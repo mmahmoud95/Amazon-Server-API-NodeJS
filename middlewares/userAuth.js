@@ -2,8 +2,7 @@ const { log } = require('console')
 const jwt=require('jsonwebtoken')
 const{promisify}=require('util')
 
-
- const auth=async function (req,res,next){
+const auth=async function (req,res,next){
     const {authorization}=req.headers
     // console.log("your token :",authorization);
     if(!authorization){

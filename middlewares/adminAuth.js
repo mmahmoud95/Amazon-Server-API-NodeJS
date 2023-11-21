@@ -21,3 +21,4 @@ const authRole = async function (req, res, next) {
   }
 };
 module.exports = { authRole };
+
