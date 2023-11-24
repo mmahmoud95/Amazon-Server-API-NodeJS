@@ -39,9 +39,9 @@ router.delete("/:id", auth, authRole, deletProductByID);
 router.get('/filterByPrice/:price',filterWithPrice)
 router.get('/filterByRating/:rating',filterByRating)
 router.get('/filterByBrand/:brand',filterByBrand)
-router.get('/subSubCategory/:subSubCategory',queryfilterPrdSubSub)
 router.get('/categoryPrd/:categoryId',queryfilterPrdOfCategory)
 router.get('/subCategoryPrd/:subCategoryId',queryfilterPrdOfSubCategory)
+router.get('/subSubCategory/:subSubCategory',queryfilterPrdSubSub)
 // router.use(auth);
 
 router.post("/addbyAd", auth, authRole, createProduct);
