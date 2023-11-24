@@ -372,7 +372,7 @@ const queryfilterPrdSubSub = async (req, res) => {
   console.log(req.query);
   const queryObj = { ...req.query };
   console.log(queryObj);
-  const queryFields = ["page", "limit", "skip"];
+  const queryFields = ["page", "limit", "skip","sort"];
   queryFields.forEach((field) => delete queryObj[field]);
   console.log(queryFields);
 
@@ -394,7 +394,10 @@ const queryfilterPrdSubSub = async (req, res) => {
       .equals(req.params.subSubCategory)
       .skip(skip)
       .limit(limit)
-      .populate("category", "name");
+      .populate("category", "name")
+      .sort(
+        req.query.sort?req.query.sort.split(",").join(""):{createdAt: -1 }
+      );
     if (products.length !== 0) {
       res.status(200).json({
         message: "Product fetched successfully",
