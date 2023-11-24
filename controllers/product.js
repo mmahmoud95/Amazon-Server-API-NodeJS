@@ -274,7 +274,7 @@ const queryfilterPrdOfCategory = async (req, res) => {
   console.log(req.query);
   const queryObj = { ...req.query };
   console.log(queryObj);
-  const queryFields = ["page", "limit", "skip"];
+  const queryFields = ["page", "limit", "skip","sort"];
   queryFields.forEach((field) => delete queryObj[field]);
   console.log(queryFields);
 
@@ -286,7 +286,7 @@ const queryfilterPrdOfCategory = async (req, res) => {
   queryStr = queryStr.replace(/\b(gt|gte|lt|lte)\b/g, (match) => `$${match}`);
   //pagination
   const page = req.query.page * 1 || 1;
-  const limit = req.query.limit * 1;
+  const limit = req.query.limit * 1 ||20;
   const skip = (page - 1) * limit || req.query.skip;
 
   try {
@@ -296,7 +296,10 @@ const queryfilterPrdOfCategory = async (req, res) => {
       .equals(req.params.categoryId)
       .skip(skip)
       .limit(limit)
-      .populate("category", "name");
+      .populate("category", "name")
+      .sort(
+        req.query.sort?req.query.sort.split(",").join(""):{createdAt: -1 }
+      );
     if (products.length !== 0) {
       res.status(200).json({
         message: "Product fetched successfully",
@@ -378,7 +381,7 @@ const queryfilterPrdSubSub = async (req, res) => {
   queryStr = queryStr.replace(/\b(gt|gte|lt|lte)\b/g, (match) => `$${match}`);
   //pagination
   const page = req.query.page * 1 || 1;
-  const limit = req.query.limit * 1 || 20;
+  const limit = req.query.limit *1 || 20;
   const skip = (page - 1) * limit || req.query.skip;
 
   try {
