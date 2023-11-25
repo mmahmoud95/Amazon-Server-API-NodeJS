@@ -57,8 +57,9 @@ const getFilteredProducts = async (req, res) => {
           const products = await productModel.find({
             "en.title": { $regex: search, $options: "i" },
           });
-          console.log("after find data", products);
+          console.log("after find data");
           if (products.length > 0) {
+            console.log("after find data");
             res.status(200).json({
               message: "Products fetched successfully",
               data: products,
