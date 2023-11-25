@@ -22,14 +22,15 @@ const {
     createProduct,
     getProductsByAdmin,
     deleteProductByAdmin,
-    getAllProductForAdmin
+    getAllProductForAdmin,
+    getCountAllProduct
 } = require("../controllers/product");
 
 router.post("/",auth, authRole, addNewProduct);
 router.post("/result", getFilteredProducts);
 router.get("/all", getAllProduct);
 router.get("/adminProducts", auth, authRole,getAllProductForAdmin);
-
+router.get("/count", auth, authRole,getCountAllProduct);
 router.get("/:id", getProductById);
 router.get("/admin/:id",getProductByIdForDashboard);
 router.get("/category/:category", getProductsByCategory);

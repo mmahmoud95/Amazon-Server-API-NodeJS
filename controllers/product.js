@@ -511,7 +511,16 @@ const deleteProductByAdmin = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
+const getCountAllProduct = async (req, res) => {
+  const { id } = req;
+  try {
+    const products = await productModel.find({ createdBy: id });
+    const count=products.length
+    res.status(200).json({count});
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
 // module.exports = {
 //     createProduct,
 //     getProductsByAdmin,
@@ -540,4 +549,5 @@ module.exports = {
   queryfilterPrdOfCategory,
   queryfilterPrdOfSubCategory,
   getAllProductForAdmin,
+  getCountAllProduct
 };
