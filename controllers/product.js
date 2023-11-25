@@ -57,8 +57,9 @@ const getFilteredProducts = async (req, res) => {
                     const products = await productModel.find({
                         "en.title": { $regex: search, $options: "i" },
                     });
-                    console.log("after find data", products);
+                    console.log("after find data");
                     if (products.length > 0) {
+                        console.log("after find data");
                         res.status(200).json({
                             message: "Products fetched successfully",
                             data: products,
@@ -119,10 +120,10 @@ const getFilteredProducts = async (req, res) => {
                 }
             }
         } catch (error) {
-            res.status(400).json({ message: error.message });
+            res.status(400).json({ message: error.message, data: [] });
         }
     } else {
-        res.status(404).json({ message: "not found" });
+        res.status(200).json({ message: "not found" });
     }
 };
 const getProductById = async (req, res) => {
@@ -566,6 +567,16 @@ const deleteProductByAdmin = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+const getCountAllProduct = async (req, res) => {
+    const { id } = req;
+    try {
+        const products = await productModel.find({ createdBy: id });
+        const count = products.length;
+        res.status(200).json({ count });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
 const getProductsRandom = async (req, res) => {
     const count = req.params.count;
     try {
@@ -611,5 +622,6 @@ module.exports = {
     queryfilterPrdOfCategory,
     queryfilterPrdOfSubCategory,
     getAllProductForAdmin,
+    getCountAllProduct,
     getProductsRandom,
 };
