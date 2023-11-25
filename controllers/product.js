@@ -359,6 +359,28 @@ const queryfilterPrdOfSubCategory = async (req, res) => {
   const page = req.query.page * 1 || 1;
   const limit = req.query.limit * 1 || 20;
   const skip = (page - 1) * limit || req.query.skip;
+  const endIndex = page * limit;
+  
+  let documentCount = await productModel
+    .countDocuments(JSON.parse(queryStr))
+    .where("subCategory")
+    .equals(req.params.subCategoryId);
+  console.log(documentCount, "documentCount");
+
+  const pagination = {};
+  pagination.currentPage = page;
+  pagination.limit = limit;
+  pagination.numberOfPages = Math.ceil(documentCount / limit);
+  //next page
+  if (endIndex < documentCount) {
+    pagination.next = page + 1;
+  }
+  //previous page
+  if (skip > 0) {
+    pagination.prev = page - 1;
+  }
+  console.log(pagination, "pagination");
+
 
   try {
     const products = await productModel
@@ -375,6 +397,7 @@ const queryfilterPrdOfSubCategory = async (req, res) => {
       res.status(200).json({
         message: "Product fetched successfully",
         results: products.length,
+        pagination: pagination,
         page,
         data: products,
       });
