@@ -22,13 +22,12 @@ const {
     createProduct,
     getProductsByAdmin,
     deleteProductByAdmin,
-    getAllProductForAdmin
 } = require("../controllers/product");
 
 router.post("/",auth, authRole, addNewProduct);
 router.post("/result", getFilteredProducts);
 router.get("/all", getAllProduct);
-router.get("/adminProducts", auth, authRole,getAllProductForAdmin);
+// router.get("/adminProducts", auth, authRole,getProductsByAdmin);
 
 router.get("/:id", getProductById);
 router.get("/admin/:id",getProductByIdForDashboard);
@@ -47,10 +46,10 @@ router.get('/subCategoryPrd/:subCategoryId',queryfilterPrdOfSubCategory)
 router.post("/addbyAd", auth, authRole, createProduct);
 
 // GET /products - Only admin can get their products
-router.get("/", auth, authRole, getProductsByAdmin);
+// router.get("/", auth, authRole, getProductsByAdmin);
 
 // DELETE /products/:productId - Only admin can delete their product
-router.delete("/:productId", auth, authRole, deleteProductByAdmin);
+// router.delete("/:productId", auth, authRole, deleteProductByAdmin);
 
 
 

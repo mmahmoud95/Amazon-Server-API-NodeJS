@@ -271,16 +271,16 @@ const filterByBrand = async (req, res) => {
 // filtering products of specific category by query string:
 const queryfilterPrdOfCategory = async (req, res) => {
   //filtering
-  console.log(req.query);
+//   console.log(req.query);
   const queryObj = { ...req.query };
-  console.log(queryObj);
+//   console.log(queryObj);
   const queryFields = ["page", "limit", "skip"];
   queryFields.forEach((field) => delete queryObj[field]);
-  console.log(queryFields);
+//   console.log(queryFields);
 
   //converting {gte,gt,lt,lte} to {$gte, $gt, $lt, $lte}
   let queryStr = JSON.stringify(queryObj);
-  console.log(queryStr);
+//   console.log(queryStr);
   //regEx: "\b \b" means the same word with exact letters (not a piece of word) ,
   //"g" means any count of this words
   queryStr = queryStr.replace(/\b(gt|gte|lt|lte)\b/g, (match) => `$${match}`);
@@ -474,7 +474,7 @@ const deleteProductByAdmin = async (req, res) => {
       });
     }
 
-    res.json(deletedProduct);
+    res.json(deletedProduct); 
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

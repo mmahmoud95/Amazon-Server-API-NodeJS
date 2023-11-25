@@ -40,7 +40,7 @@ const addNewReview = async (req, res) => {
             ]);
             if (upadateProductRating.length > 0) {
                 await productModel.findByIdAndUpdate(productId, {
-                    rating: upadateProductRating[0].avgRatings,
+                    rating: Math.round(upadateProductRating[0].avgRatings),
                     ratingQuantity: upadateProductRating[0].ratingsQuantity,
                 });
                 console.log(upadateProductRating);
