@@ -365,7 +365,7 @@ const queryfilterPrdOfSubCategory = async (req, res) => {
     .countDocuments(JSON.parse(queryStr))
     .where("subCategory")
     .equals(req.params.subCategoryId);
-  console.log(documentCount, "documentCount");
+   console.log(documentCount, "documentCount");
 
   const pagination = {};
   pagination.currentPage = page;
