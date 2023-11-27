@@ -293,8 +293,11 @@ const queryfilterPrdOfCategory = async (req, res) => {
     queryStr = queryStr.replace(/\b(gt|gte|lt|lte)\b/g, (match) => `$${match}`);
     //pagination
     const page = req.query.page * 1 || 1;
+    console.log(page,"pageeeee");
     const limit = req.query.limit * 1 || 20;
-    const skip = (page - 1) * limit || req.query.skip;
+    console.log(limit,"limittt");
+    const skip = ((page - 1) * limit)*1 || req.query.skip;
+    console.log(skip,"skippppppp");
     const endIndex = page * limit;
 
     let documentCount = await productModel
@@ -306,6 +309,7 @@ const queryfilterPrdOfCategory = async (req, res) => {
     const pagination = {};
     pagination.currentPage = page;
     pagination.limit = limit;
+    pagination.skip= (skip)*1;
     pagination.numberOfPages = Math.ceil(documentCount / limit);
     //next page
     if (endIndex < documentCount) {
@@ -333,7 +337,7 @@ const queryfilterPrdOfCategory = async (req, res) => {
         if (products.length !== 0) {
             res.status(200).json({
                 message: "Product fetched successfully",
-                results: products.length,
+                results: documentCount,
                 pagination: pagination,
                 page,
                 data: products,
@@ -367,7 +371,7 @@ const queryfilterPrdOfSubCategory = async (req, res) => {
     //pagination
     const page = req.query.page * 1 || 1;
     const limit = req.query.limit * 1 || 20;
-    const skip = (page - 1) * limit || req.query.skip;
+    const skip = ((page - 1) * limit )*1|| req.query.skip;
     const endIndex = page * limit;
 
     let documentCount = await productModel
@@ -379,6 +383,7 @@ const queryfilterPrdOfSubCategory = async (req, res) => {
     const pagination = {};
     pagination.currentPage = page;
     pagination.limit = limit;
+    pagination.skip= (skip)*1;
     pagination.numberOfPages = Math.ceil(documentCount / limit);
     //next page
     if (endIndex < documentCount) {
@@ -440,7 +445,7 @@ const queryfilterPrdSubSub = async (req, res) => {
     //pagination
     const page = req.query.page * 1 || 1;
     const limit = req.query.limit * 1 || 20;
-    const skip = (page - 1) * limit || req.query.skip;
+    const skip = ((page - 1) * limit)*1 || req.query.skip;
     const endIndex = page * limit;
 
     let documentCount = await productModel
@@ -452,6 +457,7 @@ const queryfilterPrdSubSub = async (req, res) => {
     const pagination = {};
     pagination.currentPage = page;
     pagination.limit = limit;
+    pagination.skip= (skip)*1;
     pagination.numberOfPages = Math.ceil(documentCount / limit);
     //next page
     if (endIndex < documentCount) {
