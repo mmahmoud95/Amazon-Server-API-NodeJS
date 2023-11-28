@@ -6,7 +6,7 @@ const categoryschems = mongoose.Schema(
       name: {
         type: String,
         minlength: 5,
-        maxlength: 20,
+        maxlength: 25,
         require: true,
       },
     },
@@ -14,7 +14,7 @@ const categoryschems = mongoose.Schema(
       name: {
         type: String,
         minlength: 5,
-        maxlength: 20,
+        maxlength: 40,
         require: true,
       },
     },

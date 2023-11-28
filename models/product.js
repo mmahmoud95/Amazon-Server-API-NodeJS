@@ -70,6 +70,10 @@ const productSchema = mongoose.Schema(
             default: 0,
         },
         ratingQuantity: { type: Number, default: 0 },
+        rating: {
+            type: Number,
+            default: 0,
+        },
         createdBy: {
             type: mongoose.SchemaTypes.ObjectId,
             ref: "User",
