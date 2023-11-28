@@ -4,6 +4,9 @@ const productModel = require("../models/product");
 const { updateCart } = require("./cart");
 const { userModel } = require("../models/userModel");
 const { now } = require("mongoose");
+const mongoose = require("mongoose");
+const { ObjectId } = require("mongodb");
+
 //stripe
 // for payments
 const REACT_APP_STRIPE_KEY = "";
@@ -15,7 +18,7 @@ const payByStripe = async (req, res) => {
   const shippingPrice = 0;
   const userId = req.id;
   const { amount, orderData, product, payMethod, cartID } = req.body;
-  const { city, street, province, zip ,fullName} = orderData;
+  const { city, street, province, zip, fullName } = orderData;
   console.log(cartID);
   // Check if any product in the cart or single product lacks the 'quantity' property
   const hasQuantityObject = product.some(
@@ -37,7 +40,7 @@ const payByStripe = async (req, res) => {
 
       const order = await orderModel.create({
         user: userId,
-        name:fullName,
+        name: fullName,
         shippingAddress: { street, province, zip, city },
         cartItems: product.map((item) => ({
           productId: item.productId,
@@ -70,8 +73,8 @@ const payByStripe = async (req, res) => {
         currency: "usd",
       });
       const order2 = await orderModel.create({
-        user: userId,      
-        name:fullName,
+        user: userId,
+        name: fullName,
         shippingAddress: { street, province, zip, city },
         cartItems: {
           productId: product[0]._id,
@@ -101,7 +104,7 @@ const createCashOrder = async (req, res) => {
   const shippingPrice = 0;
   const userId = req.id;
   const { amount, orderData, product, payMethod, cartID } = req.body;
-  const { city, street, province, zip,fullName } = orderData;
+  const { city, street, province, zip, fullName } = orderData;
   // Check if any product in the cart or single product lacks the 'quantity' property
   const hasQuantityObject = product.some(
     (item) => typeof item === "object" && "quantityInStock" in item
@@ -117,7 +120,7 @@ const createCashOrder = async (req, res) => {
     if (product && !hasQuantityObject) {
       const order = await orderModel.create({
         user: userId,
-        name:fullName,
+        name: fullName,
         shippingAddress: { street, province, zip, city },
         cartItems: product.map((item) => ({
           productId: item.productId,
@@ -141,7 +144,7 @@ const createCashOrder = async (req, res) => {
       console.log("single product", quantity, totalPrice);
       const order2 = await orderModel.create({
         user: userId,
-        name:fullName,
+        name: fullName,
         shippingAddress: { street, province, zip, city },
         cartItems: {
           productId: product[0]._id,
@@ -159,23 +162,61 @@ const createCashOrder = async (req, res) => {
   }
 };
 // delete order by id
-const deleteOrder=async (req, res) => {
+const deleteOrder = async (req, res) => {
   const orderId = req.params.orderId;
-  console.log(orderId,"delete");
+  console.log(orderId, "delete");
 
   try {
     const deletedOrder = await orderModel.findByIdAndDelete(orderId);
 
     if (deletedOrder) {
-      return res.status(204).json({ message: 'Order deleted successfully' });
+      return res.status(204).json({ message: "Order deleted successfully" });
     } else {
-      return res.status(404).json({ message: 'Order not found' });
+      return res.status(404).json({ message: "Order not found" });
     }
   } catch (error) {
-    console.error('Error deleting order:', error);
-    return res.status(500).json({ message: 'Internal Server Error' });
+    console.error("Error deleting order:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
+// get orders for admin
+const getAllOrdersForAdmin = async (req, res) => {
+  const { id } = req;
+  console.log(id, "seller id");
+  const idObject = new ObjectId(id);
+  try {
+    const orders = await orderModel.find().populate("cartItems.productId");    // Find products with  createdBy in orders
+    if (orders) {
+      const orderedProducts = orders.reduce((result, order) => {
+        order.cartItems.forEach((cartItem) => {
+          if (cartItem.productId.createdBy.equals(idObject)) {
+            result.push({
+              product: cartItem.productId,
+              quantity: cartItem.quantity,
+            });
+          }
+        });
+        return result;
+      }, []);
+      let totalSales = 0;
+
+      orderedProducts.forEach((item) => {
+        const product = item.product;
+        const quantity = item.quantity;
+        const productTotal = product.price * quantity;
+
+        totalSales += productTotal;
+      });
+
+      res.status(200).json({ orderedProducts, totalSales });
+    } else {
+      res.status(200).json({ orderedProducts: [] });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(201).send({ orderedProducts: [] });
+  }
+};
 
 //get all orders for admin :
 const getAllOrders = async (req, res) => {
@@ -206,7 +247,6 @@ const getSpecificUserOrder = async (req, res) => {
     const orders = await orderModel
       .find({ user: userId })
       .populate("cartItems.productId");
-    console.log(orders, "kiiii");
     return res.status(200).json(orders);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -379,6 +419,7 @@ module.exports = {
   getAllOrders,
   getSpecificUserOrder,
   deleteOrder,
+  getAllOrdersForAdmin,
   updateOrderToPaid,
   updateOrderTODelivered,
   chechOutSession,

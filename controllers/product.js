@@ -459,6 +459,7 @@ const createProduct = async (req, res) => {
     const savedProduct = await product.save();
     res.json(savedProduct);
   } catch (error) {
+    console.log(error);
     res.status(400).json({ message: error.message });
   }
 };

@@ -45,7 +45,7 @@ router.get('/subCategoryPrd/:subCategoryId',queryfilterPrdOfSubCategory)
 router.get('/subSubCategory/:subSubCategory',queryfilterPrdSubSub)
 // router.use(auth);
 
-router.post("/addbyAd", auth, authRole, createProduct);
+router.post("/addbyAdmin", auth, authRole, createProduct);
 
 // GET /products - Only admin can get their products
 router.get("/", auth, authRole, getProductsByAdmin);
