@@ -1,6 +1,6 @@
 const express = require("express");
 var router = express.Router();
-var {createCashOrder,getAllOrders,getAllOrdersForAdmin,getSpecificUserOrder,updateOrderToPaid,deleteOrder,updateOrderTODelivered,chechOutSession, payByStripe}=require('../controllers/order');
+var {createCashOrder,getAllOrders,getAllOrdersForAdmin,getSpecificUserOrder,updateOrderToPaid,deleteOrder,updateOrderTODelivered,chechOutSession, payByStripe, getAllCustomersForAdmin}=require('../controllers/order');
 const {auth}=require('../middlewares/userAuth');
 const {authRole}=require('../middlewares/adminAuth');
 // paybystripe
@@ -16,6 +16,8 @@ router.get("/userOrders",auth,getSpecificUserOrder);
 
 
 router.get('/adminOrders',auth,authRole,getAllOrdersForAdmin);
+// get customers
+router.get('/adminClients',auth,authRole,getAllCustomersForAdmin);
 
 //update order paid status to paid using order id (by admin):
 router.patch("/updateOrderToPaid/:orderId",auth,authRole,updateOrderToPaid);

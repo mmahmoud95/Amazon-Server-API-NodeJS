@@ -19,13 +19,11 @@ const payByStripe = async (req, res) => {
   const userId = req.id;
   const { amount, orderData, product, payMethod, cartID } = req.body;
   const { city, street, province, zip, fullName } = orderData;
-  console.log(cartID);
   // Check if any product in the cart or single product lacks the 'quantity' property
   const hasQuantityObject = product.some(
     (item) => typeof item === "object" && "quantityInStock" in item
   );
 
-  console.log(req.body);
 
   try {
     const cartPrice = amount / 100;
@@ -51,14 +49,14 @@ const payByStripe = async (req, res) => {
         paymentMethodType: payMethod,
         totalOrderPrice: totalOrderPrice,
       });
-      console.log(order, "'this is order from cart");
+      // console.log(order, "'this is order from cart");
       //clear cart:
       if (cartID) {
-        console.log(cartID);
+        // console.log(cartID);
         const deletedCart = await cartModel.findByIdAndDelete(cartID);
       }
       //response user:
-      console.log(paymentIntent.client_secret, "key");
+      // console.log(paymentIntent.client_secret, "key");
       res.status(201).json({
         message: "order success",
         data: order,
@@ -85,7 +83,7 @@ const payByStripe = async (req, res) => {
         paymentMethodType: payMethod,
         totalOrderPrice: totalPrice,
       });
-      console.log(paymentIntent.client_secret, "key");
+      // console.log(paymentIntent.client_secret, "key");
       res.status(201).json({
         message: "order success",
         data: order2,
@@ -94,7 +92,7 @@ const payByStripe = async (req, res) => {
     }
   } catch (error) {
     res.status(400).json({ message: error.message });
-    console.log(error);
+    // console.log(error);
   }
 };
 
@@ -110,7 +108,7 @@ const createCashOrder = async (req, res) => {
     (item) => typeof item === "object" && "quantityInStock" in item
   );
 
-  console.log(req.body);
+  // console.log(req.body);
 
   try {
     const cartPrice = amount;
@@ -130,10 +128,10 @@ const createCashOrder = async (req, res) => {
         paymentMethodType: payMethod,
         totalOrderPrice: totalOrderPrice,
       });
-      console.log(order, "'this is order from cart");
+      // console.log(order, "'this is order from cart");
       //clear cart:
       if (cartID) {
-        console.log(cartID);
+        // console.log(cartID);
         const deletedCart = await cartModel.findByIdAndDelete(cartID);
       }
       //response user:
@@ -141,7 +139,7 @@ const createCashOrder = async (req, res) => {
     } else {
       const { quantity } = req.body.product[1];
       const totalPrice = quantity * amount;
-      console.log("single product", quantity, totalPrice);
+      // console.log("single product", quantity, totalPrice);
       const order2 = await orderModel.create({
         user: userId,
         name: fullName,
@@ -158,7 +156,7 @@ const createCashOrder = async (req, res) => {
     }
   } catch (error) {
     res.status(400).json({ message: error.message });
-    console.log(error);
+    // console.log(error);
   }
 };
 // delete order by id
@@ -185,7 +183,7 @@ const getAllOrdersForAdmin = async (req, res) => {
   console.log(id, "seller id");
   const idObject = new ObjectId(id);
   try {
-    const orders = await orderModel.find().populate("cartItems.productId");    // Find products with  createdBy in orders
+    const orders = await orderModel.find().populate("cartItems.productId"); // Find products with  createdBy in orders
     if (orders) {
       const orderedProducts = orders.reduce((result, order) => {
         order.cartItems.forEach((cartItem) => {
@@ -215,6 +213,97 @@ const getAllOrdersForAdmin = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(201).send({ orderedProducts: [] });
+  }
+};
+// get all customers for admin
+const getAllCustomersForAdmin = async (req, res) => {
+  const { id } = req;
+  const idObject = new ObjectId(id);
+
+  try {
+    const orders = await orderModel
+      .find()
+      .populate("user")
+      .populate("cartItems.productId"); // Find products with  createdBy in orders
+    if (orders) {
+      const orderedProducts = orders.reduce((result, order) => {
+        let customer = order.user._id;
+        let email = order.user.email;
+        let name = order.user.name;
+        order.cartItems.forEach((cartItem) => {
+          if (cartItem.productId.createdBy.equals(idObject)) {
+            result.push({
+              customer: customer,
+              email: email,
+              name: name,
+              product: cartItem.productId,
+              quantity: cartItem.quantity,
+            });
+          }
+        });
+        return result;
+      }, []);
+      // for total sales
+      let totalSales = 0;
+
+      orderedProducts.forEach((item) => {
+        const product = item.product;
+        const quantity = item.quantity;
+        const productTotal = product.price * quantity;
+
+        totalSales += productTotal;
+      });
+      const customerData = {};
+
+      orderedProducts.forEach((order) => {
+        const { customer, email, name, product, quantity } = order;
+        if (!customerData[customer]) {
+          customerData[customer] = [];
+        }
+        if (!customerData[customer]) {
+          customerData[customer] = [];
+        }
+        const existingProduct = customerData[customer].find(
+          (p) => p.product._id === product._id
+        );
+        // const existingName = customerData[customer].find(p => p.name === name);
+        if (existingProduct) {
+          existingProduct.quantity += quantity;
+        } else {
+          customerData[customer].push({
+            // name,
+            product,
+            quantity,
+          });
+        }
+        // if(existingName){
+        //   customerData[customer].push({
+        //     name:''})
+        // }else{
+        //   customerData[customer].push({
+        //     name})
+        // }
+      });
+      const organizedData = Object.keys(customerData).map((customerId) => ({
+        customer: {ID:customerId,name:"",email:""},
+        products: customerData[customerId],
+      }));
+      const clientsData = await Promise.all(organizedData.map(async (order) => {
+        let customer = await userModel.findById(order.customer.ID);
+        if (customer) {
+          order.customer.name = customer.name;
+          order.customer.email = customer.email;
+          return order;
+        }
+      }));
+           
+      res.status(200).json({ clients: clientsData, message: "success" });
+    } else {
+      res.status(200).json({ orderedProducts: [], message: "no orders yet" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(201).send({ orderedProducts: [], message: "error in data" });
   }
 };
 
@@ -420,6 +509,7 @@ module.exports = {
   getSpecificUserOrder,
   deleteOrder,
   getAllOrdersForAdmin,
+  getAllCustomersForAdmin,
   updateOrderToPaid,
   updateOrderTODelivered,
   chechOutSession,

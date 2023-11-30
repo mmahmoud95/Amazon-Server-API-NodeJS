@@ -3,7 +3,7 @@ const productModel = require("../models/product");
 
 const addNewProduct = async (req, res) => {
 	const product = req.body;
-	log(product, "gggggg");
+	// log(product, "gggggg");
 	try {
 		const newProduct = await productModel.create(product);
 		res.status(201).json({
@@ -11,7 +11,7 @@ const addNewProduct = async (req, res) => {
 			data: newProduct,
 		});
 	} catch (error) {
-		log(error);
+		// log(error);
 		res.status(400).json({message: error.message});
 	}
 };
@@ -45,21 +45,18 @@ const getAllProduct = async (req, res) => {
 };
 const getFilteredProducts = async (req, res) => {
 	const {search} = req.query;
-	console.log(search, "search value");
+	// console.log(search, "search value");
 	const category = req.body.category;
 	const lang = req.body.lang;
-	console.log(category, "selected", lang);
+	// console.log(category, "selected", lang);
 	if (search) {
 		try {
 			if (lang === "en") {
 				if (category === "All") {
-					console.log("inside if");
 					const products = await productModel.find({
 						"en.title": {$regex: search, $options: "i"},
 					});
-					console.log("after find data");
 					if (products.length > 0) {
-						console.log("after find data");
 						res.status(200).json({
 							message: "Products fetched successfully",
 							data: products,
@@ -143,7 +140,6 @@ const getProductById = async (req, res) => {
 };
 const getProductByIdForDashboard = async (req, res) => {
 	const id = req.params.id;
-	console.log(id);
 	try {
 		const product = await productModel.findById(id);
 
@@ -158,7 +154,6 @@ const getProductByIdForDashboard = async (req, res) => {
 // update product by id
 const updateProductByID = async (req, res) => {
 	const id = req.params.id;
-	console.log(req.body);
 	const english = req.body.en;
 	const arabic = req.body.ar;
 
@@ -540,11 +535,9 @@ const getProductsByAdmin = async (req, res) => {
 
 		// Check if the user is an admin
 		if (user.userType !== "admin") {
-			return res
-				.status(403)
-				.json({
-					message: "Access denied. User is not an admin.",
-				});
+			return res.status(403).json({
+				message: "Access denied. User is not an admin.",
+			});
 		}
 
 		const products = await Product.find({createdBy: user._id});
@@ -562,11 +555,9 @@ const deleteProductByAdmin = async (req, res) => {
 
 		// Check if the user is an admin
 		if (user.userType !== "admin") {
-			return res
-				.status(403)
-				.json({
-					message: "Access denied. User is not an admin.",
-				});
+			return res.status(403).json({
+				message: "Access denied. User is not an admin.",
+			});
 		}
 
 		const deletedProduct = await Product.findOneAndDelete({
