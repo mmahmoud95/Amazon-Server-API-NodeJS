@@ -490,6 +490,7 @@ const queryfilterPrdSubSub = async (req, res) => {
 			res.status(200).json({
 				message: "Product fetched successfully",
 				results: products.length,
+				pagination: pagination,
 				page,
 				data: products,
 			});
