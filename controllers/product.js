@@ -128,7 +128,7 @@ const getProductById = async (req, res) => {
 	try {
 		const product = await productModel
 			.findById(id)
-			.populate("category", ["ar", "en"]).populate("createdBy")
+			.populate("category", ["ar", "en"]).populate("createdBy").populate("subSubCategor",["ar", "en"])
 
 		res.status(200).json({
 			message: "Product fetched successfully",
