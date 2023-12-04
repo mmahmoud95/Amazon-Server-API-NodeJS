@@ -24,7 +24,6 @@ const payByStripe = async (req, res) => {
     (item) => typeof item === "object" && "quantityInStock" in item
   );
 
-
   try {
     const cartPrice = amount / 100;
     const totalOrderPrice = cartPrice + taxPrice + shippingPrice;
@@ -49,19 +48,44 @@ const payByStripe = async (req, res) => {
         paymentMethodType: payMethod,
         totalOrderPrice: totalOrderPrice,
       });
-      // console.log(order, "'this is order from cart");
       //clear cart:
       if (cartID) {
-        // console.log(cartID);
-        const deletedCart = await cartModel.findByIdAndDelete(cartID);
+        console.log(cartID);
+        try {
+          const deletedCart = await cartModel.findByIdAndDelete(cartID);
+      
+          for (const item of product) {
+            const productDoc = await productModel.findById(item.productId);
+      
+            if (productDoc.quantityInStock >= item.quantity) {
+              const newQuantity = productDoc.quantityInStock - item.quantity;
+              const newSold = productDoc.sold + item.quantity;
+              console.log("ssss", newQuantity, newSold);
+      
+              const updatedProduct = await productModel.updateOne(
+                { _id: item.productId },
+                {
+                  quantityInStock: newQuantity,
+                  sold: newSold,
+                }
+              );
+            } else {
+              // Handle insufficient quantity error if needed
+              console.log("Insufficient quantity error");
+            }
+          }
+      
+          // Send the response only once after processing all products
+          res.status(201).json({ message: "order success", data: order });
+        } catch (error) {
+          // Handle errors, log them, or send an appropriate response
+          console.error("Error:", error);
+          res.status(500).json({ message: "Internal server error" });
+        }
       }
-      //response user:
-      // console.log(paymentIntent.client_secret, "key");
-      res.status(201).json({
-        message: "order success",
-        data: order,
-        key: paymentIntent.client_secret,
-      });
+       else {
+        res.status(201).json({ message: "order success", data: order });
+      }
     } else {
       const { quantity } = req.body.product[1];
       const totalPrice = quantity * (amount / 100);
@@ -83,12 +107,32 @@ const payByStripe = async (req, res) => {
         paymentMethodType: payMethod,
         totalOrderPrice: totalPrice,
       });
+
+            // Update product quantities
+
+      // const productDoc = await productModel.findById(product[0]._id);
+      if (product[0].quantityInStock >= quantity) {
+        const newQuantity = product[0].quantityInStock - quantity;
+        const newSold = product[0].sold + quantity;
+        console.log("ssss", newQuantity, newSold);
+        const productDoc = await productModel.findById(product[0]._id);
+        if (productDoc) {
+          const NEWproduct = await productModel.updateOne(
+            { _id: product[0]._id },
+            {
+              quantityInStock: newQuantity,
+              sold: newSold,
+            }
+          );
+          res.status(201).json({ message: "order success", data: order2 });
+        } else {
+          res.status(201).json({ message: "order success", data: order2 });
+        }
+      } else {
+        res.status(201).json({ message: "order success", data: order2 });
+      }
       // console.log(paymentIntent.client_secret, "key");
-      res.status(201).json({
-        message: "order success",
-        data: order2,
-        key: paymentIntent.client_secret,
-      });
+   
     }
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -108,7 +152,7 @@ const createCashOrder = async (req, res) => {
     (item) => typeof item === "object" && "quantityInStock" in item
   );
 
-  // console.log(req.body);
+  console.log(req.body);
 
   try {
     const cartPrice = amount;
@@ -128,14 +172,45 @@ const createCashOrder = async (req, res) => {
         paymentMethodType: payMethod,
         totalOrderPrice: totalOrderPrice,
       });
-      // console.log(order, "'this is order from cart");
+
       //clear cart:
       if (cartID) {
-        // console.log(cartID);
-        const deletedCart = await cartModel.findByIdAndDelete(cartID);
+        console.log(cartID);
+        try {
+          const deletedCart = await cartModel.findByIdAndDelete(cartID);
+      
+          for (const item of product) {
+            const productDoc = await productModel.findById(item.productId);
+      
+            if (productDoc.quantityInStock >= item.quantity) {
+              const newQuantity = productDoc.quantityInStock - item.quantity;
+              const newSold = productDoc.sold + item.quantity;
+              console.log("ssss", newQuantity, newSold);
+      
+              const updatedProduct = await productModel.updateOne(
+                { _id: item.productId },
+                {
+                  quantityInStock: newQuantity,
+                  sold: newSold,
+                }
+              );
+            } else {
+              // Handle insufficient quantity error if needed
+              console.log("Insufficient quantity error");
+            }
+          }
+      
+          // Send the response only once after processing all products
+          res.status(201).json({ message: "order success", data: order });
+        } catch (error) {
+          // Handle errors, log them, or send an appropriate response
+          console.error("Error:", error);
+          res.status(500).json({ message: "Internal server error" });
+        }
       }
-      //response user:
-      res.status(201).json({ message: "order success", data: order });
+       else {
+        res.status(201).json({ message: "order success", data: order });
+      }
     } else {
       const { quantity } = req.body.product[1];
       const totalPrice = quantity * amount;
@@ -152,7 +227,32 @@ const createCashOrder = async (req, res) => {
         paymentMethodType: payMethod,
         totalOrderPrice: totalPrice,
       });
-      res.status(201).json({ message: "order success", data: order2 });
+
+      // Update product quantities
+
+      // const productDoc = await productModel.findById(product[0]._id);
+      if (product[0].quantityInStock >= quantity) {
+        const newQuantity = product[0].quantityInStock - quantity;
+        const newSold = product[0].sold + quantity;
+        console.log("ssss", newQuantity, newSold);
+        const productDoc = await productModel.findById(product[0]._id);
+        if (productDoc) {
+          const NEWproduct = await productModel.updateOne(
+            { _id: product[0]._id },
+            {
+              quantityInStock: newQuantity,
+              sold: newSold,
+            }
+          );
+          res.status(201).json({ message: "order success", data: order2 });
+        } else {
+          res.status(201).json({ message: "order success", data: order2 });
+        }
+      } else {
+        res.status(201).json({ message: "order success", data: order2 });
+      }
+
+      // res.status(201).json({ message: "order success", data: order2 });
     }
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -285,18 +385,20 @@ const getAllCustomersForAdmin = async (req, res) => {
         // }
       });
       const organizedData = Object.keys(customerData).map((customerId) => ({
-        customer: {ID:customerId,name:"",email:""},
+        customer: { ID: customerId, name: "", email: "" },
         products: customerData[customerId],
       }));
-      const clientsData = await Promise.all(organizedData.map(async (order) => {
-        let customer = await userModel.findById(order.customer.ID);
-        if (customer) {
-          order.customer.name = customer.name;
-          order.customer.email = customer.email;
-          return order;
-        }
-      }));
-           
+      const clientsData = await Promise.all(
+        organizedData.map(async (order) => {
+          let customer = await userModel.findById(order.customer.ID);
+          if (customer) {
+            order.customer.name = customer.name;
+            order.customer.email = customer.email;
+            return order;
+          }
+        })
+      );
+
       res.status(200).json({ clients: clientsData, message: "success" });
     } else {
       res.status(200).json({ orderedProducts: [], message: "no orders yet" });
